@@ -14,13 +14,9 @@ return new class extends Migration
         Schema::create('parameters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('golongan_id')->nullable()->constrained('golongans')->nullOnDelete();
-            $table->string('unsur');
-            $table->string('sub_unsur');
-            $table->string('uraian_1');
-            $table->string('uraian_2');
-            $table->string('uraian_3');
-            $table->string('hasil_kerja');
-            $table->decimal('angka_kredit');
+            $table->treeColumns();
+            $table->string('hasil_kerja')->nullable();
+            $table->decimal('angka_kredit')->nullable();
             $table->timestamps();
         });
     }

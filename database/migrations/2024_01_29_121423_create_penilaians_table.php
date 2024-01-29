@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('penilaians', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('parameter_id')->nullable()->constrained('parameters')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('parameter_id')->nullable()->constrained('parameters')->cascadeOnDelete();
             $table->decimal('nilai');
             $table->string('file');
             $table->boolean('approval')->default(false);

@@ -25,26 +25,20 @@ class ParameterResource extends Resource
             ->schema([
                 Forms\Components\Select::make('golongan_id')
                     ->relationship('golongan', 'nama'),
-                Forms\Components\TextInput::make('unsur')
+                Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('sub_unsur')
+                Forms\Components\TextInput::make('parent_id')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('uraian_1')
+                    ->numeric()
+                    ->default(-1),
+                Forms\Components\TextInput::make('order')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('uraian_2')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('uraian_3')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric()
+                    ->default(0),
                 Forms\Components\TextInput::make('hasil_kerja')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('angka_kredit')
-                    ->required()
                     ->numeric(),
             ]);
     }
@@ -55,16 +49,13 @@ class ParameterResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('golongan.nama')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('unsur')
+                Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('sub_unsur')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('uraian_1')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('uraian_2')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('uraian_3')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('parent.title')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('order')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('hasil_kerja')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('angka_kredit')

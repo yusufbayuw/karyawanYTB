@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\ParameterResource\Pages;
 
-use App\Filament\Resources\ParameterResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\ParameterResource;
+use App\Filament\Resources\ParameterResource\Widgets\ParameterWidget;
+use App\Imports\ParameterAutoImport;
+use EightyNine\ExcelImport\ExcelImportAction;
 
 class ListParameters extends ListRecords
 {
@@ -13,7 +16,19 @@ class ListParameters extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExcelImportAction::make('update')
+                ->label('Import')
+                ->icon('heroicon-o-arrow-path')
+                ->color('success')
+                ->use(ParameterAutoImport::class),
             Actions\CreateAction::make(),
+        ];
+    }
+    
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ParameterWidget::class
         ];
     }
 }
