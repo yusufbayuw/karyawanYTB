@@ -128,7 +128,9 @@ class PenilaianResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->recordUrl(
+                fn () => null
+            );
     }
 
     public static function getPages(): array

@@ -2,8 +2,9 @@
 
 namespace App\Observers;
 
-use App\Models\Penilaian;
 use File;
+use App\Models\Penilaian;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
 class PenilaianObserver implements ShouldHandleEventsAfterCommit
@@ -21,9 +22,9 @@ class PenilaianObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Penilaian $penilaian): void
     {
-        if ($penilaian->file) {
+        if ($penilaian->file && $penilaian->getOriginal('file')) {
             if ($penilaian->file != $penilaian->getOriginal('file')) {
-                File::delete($penilaian->getOriginal('file'));
+                Storage::disk('public')->delete($penilaian->getOriginal('file'));
             } 
         }
     }
@@ -33,7 +34,7 @@ class PenilaianObserver implements ShouldHandleEventsAfterCommit
      */
     public function deleted(Penilaian $penilaian): void
     {
-        File::delete($penilaian->file);
+        Storage::disk('public')->delete([$penilaian->file]);
     }
 
     /**
