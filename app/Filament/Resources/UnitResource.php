@@ -17,7 +17,15 @@ class UnitResource extends Resource
 {
     protected static ?string $model = Unit::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static ?string $modelLabel = 'Unit';
+
+    protected static ?string $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Unit';
+
+    protected static ?string $slug = 'unit';
 
     public static function form(Form $form): Form
     {

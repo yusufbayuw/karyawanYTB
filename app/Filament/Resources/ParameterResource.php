@@ -17,7 +17,17 @@ class ParameterResource extends Resource
 {
     protected static ?string $model = Parameter::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
+
+    protected static ?string $modelLabel = 'Parameter Kredit';
+
+    protected static ?string $navigationGroup = 'Angka Kredit';
+
+    protected static ?int $navigationSort = 11;
+
+    protected static ?string $navigationLabel = 'Parameter Kredit';
+
+    protected static ?string $slug = 'parameter-kredit';
 
     public static function form(Form $form): Form
     {

@@ -6,12 +6,14 @@ use App\Models\Cabang;
 use App\Models\Cicilan;
 use App\Models\Infak;
 use App\Models\Pengeluaran;
+use App\Models\Penilaian;
 use App\Models\Pinjaman;
 use App\Models\User;
 use App\Observers\CabangObserver;
 use App\Observers\CicilanObserver;
 use App\Observers\InfakObserver;
 use App\Observers\PengeluaranObserver;
+use App\Observers\PenilaianObserver;
 use App\Observers\PinjamanObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
@@ -38,6 +40,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         User::observe(UserObserver::class);
+        Penilaian::observe(PenilaianObserver::class);
     }
 
     /**

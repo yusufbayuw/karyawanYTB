@@ -17,7 +17,17 @@ class PenilaianResource extends Resource
 {
     protected static ?string $model = Penilaian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
+
+    protected static ?string $modelLabel = 'Penilaian Kredit';
+
+    protected static ?string $navigationGroup = 'Angka Kredit';
+
+    protected static ?int $navigationSort = 12;
+
+    protected static ?string $navigationLabel = 'Penilaian Kredit';
+
+    protected static ?string $slug = 'penilaian-kredit';
 
     public static function form(Form $form): Form
     {

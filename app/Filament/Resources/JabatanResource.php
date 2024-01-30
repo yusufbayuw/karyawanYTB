@@ -17,7 +17,15 @@ class JabatanResource extends Resource
 {
     protected static ?string $model = Jabatan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $modelLabel = 'Jabatan';
+
+    protected static ?string $navigationGroup = 'Pengaturan';
+
+    protected static ?string $navigationLabel = 'Jabatan';
+
+    protected static ?string $slug = 'jabatan';
 
     public static function form(Form $form): Form
     {
@@ -27,8 +35,8 @@ class JabatanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Jabatan'),
-                Forms\Components\TextInput::make('parent_id')
-                    //->relationship('parent', 'id')
+                Forms\Components\Select::make('parent_id')
+                    ->relationship('parent', 'id')
                     ->label('Atasan')
                     ->default(-1),
                 Forms\Components\TextInput::make('order')
@@ -43,13 +51,14 @@ class JabatanResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Jabatan')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.title')
-                    ->numeric()
+                    ->label('Atasan')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('order')
+                /* Tables\Columns\TextColumn::make('order')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable(), */
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

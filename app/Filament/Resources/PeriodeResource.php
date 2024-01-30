@@ -17,7 +17,17 @@ class PeriodeResource extends Resource
 {
     protected static ?string $model = Periode::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+
+    protected static ?string $modelLabel = 'Periode Pengumpulan';
+
+    protected static ?string $navigationGroup = 'Angka Kredit';
+
+    protected static ?int $navigationSort = 10;
+
+    protected static ?string $navigationLabel = 'Periode Pengumpulan';
+
+    protected static ?string $slug = 'periode-pengumpulan';
 
     public static function form(Form $form): Form
     {
