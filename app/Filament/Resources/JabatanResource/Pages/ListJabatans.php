@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\JabatanResource\Pages;
 
-use App\Filament\Resources\JabatanResource;
-use App\Filament\Resources\JabatanResource\Widgets\JabatanWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\JabatanResource;
+use EightyNine\ExcelImport\ExcelImportAction;
+use App\Filament\Resources\JabatanResource\Widgets\JabatanWidget;
 
 class ListJabatans extends ListRecords
 {
@@ -14,6 +15,9 @@ class ListJabatans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExcelImportAction::make()
+                ->color("primary")
+                ->icon('heroicon-o-arrow-up-tray'),
             Actions\CreateAction::make(),
         ];
     }

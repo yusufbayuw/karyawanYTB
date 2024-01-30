@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\UnitResource\Pages;
 
-use App\Filament\Resources\UnitResource;
 use Filament\Actions;
+use App\Filament\Resources\UnitResource;
 use Filament\Resources\Pages\ListRecords;
+use EightyNine\ExcelImport\ExcelImportAction;
 
 class ListUnits extends ListRecords
 {
@@ -13,6 +14,9 @@ class ListUnits extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExcelImportAction::make()
+                ->color("primary")
+                ->icon('heroicon-o-arrow-up-tray'),
             Actions\CreateAction::make(),
         ];
     }

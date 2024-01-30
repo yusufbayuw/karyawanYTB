@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('parameter_id')->nullable()->constrained('parameters')->cascadeOnDelete();
-            $table->decimal('nilai');
-            $table->string('file');
+            $table->foreignId('periode_id')->nullable()->constrained('periodes')->cascadeOnDelete();
+            $table->decimal('nilai')->nullable();
+            $table->string('file')->nullable();
             $table->boolean('approval')->default(false);
             $table->timestamps();
         });

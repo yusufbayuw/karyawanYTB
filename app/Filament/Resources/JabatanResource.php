@@ -27,14 +27,14 @@ class JabatanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Jabatan'),
-                /* Forms\Components\Select::make('parent_id')
-                    ->relationship('parent', 'title')
-                    ->required()
+                Forms\Components\TextInput::make('parent_id')
+                    //->relationship('parent', 'id')
+                    ->label('Atasan')
                     ->default(-1),
                 Forms\Components\TextInput::make('order')
                     ->required()
                     ->numeric()
-                    ->default(0), */
+                    ->default(0),
             ]);
     }
 

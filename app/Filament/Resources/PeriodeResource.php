@@ -30,6 +30,9 @@ class PeriodeResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('tgl_selesai')
                     ->required(),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Status')
+                    ->required(),
             ]);
     }
 

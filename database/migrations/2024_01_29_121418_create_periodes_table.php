@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->date('tgl_mulai');
             $table->date('tgl_selesai');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }

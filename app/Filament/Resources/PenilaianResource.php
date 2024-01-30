@@ -26,7 +26,7 @@ class PenilaianResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name'),
                 Forms\Components\Select::make('parameter_id')
-                    ->relationship('parameter', 'uraian_3'),
+                    ->relationship('parameter', 'title'),
                 Forms\Components\TextInput::make('nilai')
                     ->required()
                     ->numeric(),
@@ -43,14 +43,60 @@ class PenilaianResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('parameter.uraian_3')
+                Tables\Columns\TextColumn::make('parameter_id')
                     ->sortable()
-                    ->description(fn (Penilaian $penilaian) => $penilaian->parameter->unsur . '-' . $penilaian->parameter->sub_unsur),
+                    ->label('Parameter')
+                    ->formatStateUsing(function (Penilaian $penilaian) {
+                        // Convert JSON to an associative array
+                        $data = json_decode($penilaian->parameter->ancestors, true);
+                        
+                        // Extract titles
+                        $titles = array_column($data, 'title');
+                        
+                        // Exclude the last two titles
+                        $titlesToConcatenate = array_slice($titles, 0, -2);
+
+                        // Concatenate titles with the separator
+                        $resultString = implode(' - ', $titlesToConcatenate);
+
+                        if ($resultString) {
+                            $resultString = $resultString . ' - ' . $penilaian->parameter->title;
+                        } else {
+                            $resultString = $penilaian->parameter->title;
+                        }
+                        // Output the result
+                        return $resultString;
+                    })
+                    ->description(function (Penilaian $penilaian) {
+                        // Convert JSON to an associative array
+                        $data = json_decode($penilaian->parameter->ancestors, true);
+                        
+                        // Extract titles
+                        $titles = array_column($data, 'title');
+                        
+                        // Exclude the last two titles
+                        $titlesToConcatenate = array_slice($titles, -2);
+
+                        // Concatenate titles with the separator
+                        $resultString = implode(' - ', $titlesToConcatenate);
+
+                        // Output the result
+                        return $resultString;
+                    })->wrap(),
+                Tables\Columns\TextColumn::make('parameter.hasil_kerja')
+                    ->sortable()
+                    ->label('Hasil Kerja')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('parameter.angka_kredit')
+                    ->sortable()
+                    ->numeric()
+                    ->label('Angka Kredit')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('nilai')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('file')
-                    ->url(fn ($state) => env('APP_URL')."storage/".$state),
+                Tables\Columns\ImageColumn::make('file')
+                    ->simpleLightbox(),
                 Tables\Columns\IconColumn::make('approval')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -75,19 +121,10 @@ class PenilaianResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenilaians::route('/'),
-            'create' => Pages\CreatePenilaian::route('/create'),
-            'edit' => Pages\EditPenilaian::route('/{record}/edit'),
+            'index' => Pages\ManagePenilaians::route('/'),
         ];
     }
 }

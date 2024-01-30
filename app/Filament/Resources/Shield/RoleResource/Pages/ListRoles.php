@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Shield\RoleResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use App\Filament\Widgets\BottomFooterWidget;
 use EightyNine\ExcelImport\ExcelImportAction;
 use App\Filament\Resources\Shield\RoleResource;
 
@@ -22,10 +21,4 @@ class ListRoles extends ListRecords
         ];
     }
 
-    protected function getFooterWidgets(): array
-    {
-        return [
-            BottomFooterWidget::class,
-        ];
-    }
 }

@@ -18,7 +18,7 @@ class ListParameters extends ListRecords
         return [
             ExcelImportAction::make('update')
                 ->label('Import')
-                ->icon('heroicon-o-arrow-path')
+                ->icon('heroicon-o-arrow-up-tray')
                 ->color('success')
                 ->use(ParameterAutoImport::class),
             Actions\CreateAction::make(),
