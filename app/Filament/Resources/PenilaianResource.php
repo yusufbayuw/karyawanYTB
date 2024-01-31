@@ -17,6 +17,8 @@ class PenilaianResource extends Resource
 {
     protected static ?string $model = Penilaian::class;
 
+    protected static int $maxDepth = 7;
+
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
     protected static ?string $modelLabel = 'Penilaian Kredit';
@@ -108,7 +110,7 @@ class PenilaianResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('file')
-                    ->simpleLightbox(),
+                    ->simpleLightbox(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
                 Tables\Columns\IconColumn::make('approval')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
