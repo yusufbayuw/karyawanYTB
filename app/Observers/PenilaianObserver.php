@@ -34,7 +34,10 @@ class PenilaianObserver implements ShouldHandleEventsAfterCommit
      */
     public function deleted(Penilaian $penilaian): void
     {
-        Storage::disk('public')->delete([$penilaian->file]);
+        if ($penilaian->file) {
+            # code...
+            Storage::disk('public')->delete([$penilaian->file]);
+        }
     }
 
     /**

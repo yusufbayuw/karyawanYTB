@@ -34,16 +34,18 @@ class PenilaianResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name'),
+                    ->relationship('user', 'name')
+                    ->disabled(),
                 Forms\Components\Select::make('parameter_id')
-                    ->relationship('parameter', 'title'),
+                    ->relationship('parameter', 'title')
+                    ->disabled(),
                 Forms\Components\TextInput::make('nilai')
                     ->required()
                     ->numeric(),
                 Forms\Components\FileUpload::make('file')
                     ->required(),
                 Forms\Components\Toggle::make('approval')
-                    ->required(),
+                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === $penilaian->user->jabatan->parent->id)),
             ]);
     }
 
