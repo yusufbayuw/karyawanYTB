@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenilaianResource\Pages;
-use App\Filament\Resources\PenilaianResource\RelationManagers;
-use App\Models\Penilaian;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Penilaian;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\PenilaianResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PenilaianResource\RelationManagers;
+use Filament\Forms\Set;
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class PenilaianResource extends Resource
 {
@@ -37,28 +41,46 @@ class PenilaianResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->label('Pegawai')
                     ->disabled(),
                 Forms\Components\Select::make('parameter_id')
                     ->relationship('parameter', 'title')
+                    ->label('Parameter')
                     ->disabled(),
                 Forms\Components\TextInput::make('nilai')
+                    ->label('Kuantitas')
+                    ->suffix(fn (Penilaian $penilaian) => $penilaian->parameter->hasil_kerja)
+                    ->afterStateUpdated(function (Set $set, $state, Penilaian $record) {
+                        if ($record->approval) {
+                            $set('jumlah', (float)$state * (float)$record->parameter->angka_kredit);
+                        }
+                    })
                     ->required()
                     ->numeric(),
                 Forms\Components\FileUpload::make('file')
+                    ->label('Unggah Berkas')
                     ->required(),
                 Forms\Components\Toggle::make('approval')
-                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? false))),
+                    ->label('Status Persetujuan Atasan')
+                    ->disabled(fn (Penilaian $penilaian) => !((auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? false)) || auth()->user()->hasRole(['super_admin'])))
+                    ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
+                        if ($state) {
+                            $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
+                        } 
+                    }),
+                Forms\Components\Hidden::make('jumlah'),
             ]);
     }
-    public static function penilaianPegawai($penilaian) {
-        return env('APP_URL'). "storage/" . $penilaian->file;
-    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->sortable(),
+                    ->label('Pegawai')
+                    ->sortable()
+                    ->description(fn (Penilaian $penilaian) => $penilaian->user->unit->nama . ' - ' . $penilaian->user->jabatan->title . ' - ' . $penilaian->user->golongan->nama)
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('parameter_id')
                     ->sortable()
                     ->label('Parameter')
@@ -102,20 +124,21 @@ class PenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('parameter.hasil_kerja')
                     ->sortable()
                     ->label('Hasil Kerja')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('parameter.angka_kredit')
-                    ->sortable()
-                    ->numeric()
-                    ->label('Angka Kredit')
-                    ->badge(),
+                    ->badge()
+                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: '.$penilaian->parameter->angka_kredit),
                 Tables\Columns\TextColumn::make('nilai')
+                    ->label('Kuantitas')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('file')
                     ->formatStateUsing(fn ($state) => (explode('.', $state)[1] ?? 'file'))
                     ->url(fn ($state) => env('APP_URL') . "/storage/". $state, true),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
                 Tables\Columns\IconColumn::make('approval')
+                    ->label('Persetujuan')
                     ->boolean(),
+                Tables\Columns\TextColumn::make('jumlah')
+                    ->label('Nilai')
+                    ->summarize(Sum::make()),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -126,7 +149,14 @@ class PenilaianResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('pegawai')
+                    ->relationship('user', 'name', fn (Builder $query) => $query)
+            ])
+            ->groups([
+                Group::make('user.name')
+                    ->titlePrefixedWithLabel(false)
+                    ->label('Pegawai')
+                    //->orderQueryUsing(fn (Builder $query, string $direction) => $query->orderBy('jurusan_id', 'asc')->orderBy('ranking', $direction)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -137,7 +167,9 @@ class PenilaianResource extends Resource
                 ]),
             ])->recordUrl(
                 null
-            );
+            )
+            ->defaultGroup('user.name')
+            ->groupsOnly(false);
     }
 
     public static function getPages(): array

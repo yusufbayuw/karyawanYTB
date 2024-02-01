@@ -39,6 +39,7 @@ class ParameterAutoImport implements ToCollection
                     $uraian2 = $row[3];
                     $uraian3 = $row[4];
 
+                    //jika uraian 3 ada
                     if ($uraian3 !== null && $uraian2 !== null && $uraian1 !== null && $subUnsur !== null && $unsur !== null) {
                         // complete line
                         $uraian3Record = Parameter::create([
@@ -155,6 +156,7 @@ class ParameterAutoImport implements ToCollection
                         $uraian1Record->save();
                     }
 
+                    # jika uraian 3 kosong dan uraian 2 ada
                     if ($uraian3 == null && $uraian2 !== null && $uraian1 !== null && $subUnsur !== null && $unsur !== null) {
                         // complete line
                         $uraian2Record = Parameter::create([
@@ -227,13 +229,16 @@ class ParameterAutoImport implements ToCollection
                         $uraian2Record->save();
                         $subUnsurRecord = Parameter::create([
                             'title' => $subUnsur,
+                            'parent_id' => $unsurPrevId,
                             'golongan_id' => $golonganId,
                         ]);
                         $subUnsurPrevId = $subUnsurRecord->id;
                         $uraian1Record->parent_id = $subUnsurRecord->id;
                         $uraian1Record->save();
+
                     }
 
+                    // jika uraian 3 kosong, uraian 2 kosong, uraian 1 ada
                     if ($uraian3 == null && $uraian2 == null && $uraian1 !== null && $subUnsur !== null && $unsur !== null) {
                         // complete line
                         $uraian1Record = Parameter::create([
@@ -281,6 +286,9 @@ class ParameterAutoImport implements ToCollection
                         $subUnsurPrevId = $subUnsurRecord->id;
                         $uraian1Record->parent_id = $subUnsurRecord->id;
                         $uraian1Record->save();
+
+                        $subUnsurRecord->parent_id = $unsurPrevId;
+                        $subUnsurRecord->save();
                     }
                 }
             }
