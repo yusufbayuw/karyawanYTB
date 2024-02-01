@@ -47,7 +47,7 @@ class PenilaianResource extends Resource
                 Forms\Components\FileUpload::make('file')
                     ->required(),
                 Forms\Components\Toggle::make('approval')
-                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? auth()->user()->jabatan_id))),
+                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? false))),
             ]);
     }
 
