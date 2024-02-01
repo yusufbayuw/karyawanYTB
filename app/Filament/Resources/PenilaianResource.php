@@ -50,7 +50,9 @@ class PenilaianResource extends Resource
                     ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? false))),
             ]);
     }
-
+    public static function penilaianPegawai($penilaian) {
+        return env('APP_URL'). "storage/" . $penilaian->file;
+    }
     public static function table(Table $table): Table
     {
         return $table
@@ -110,7 +112,7 @@ class PenilaianResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('file')
-                    ->simpleLightbox(),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
+                    ->simpleLightbox(env('APP_URL') . "storage/{file}"),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
                 Tables\Columns\IconColumn::make('approval')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -133,7 +135,7 @@ class PenilaianResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])->recordUrl(
-                fn () => null
+                null
             );
     }
 
