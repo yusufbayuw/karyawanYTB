@@ -47,7 +47,7 @@ class PenilaianResource extends Resource
                 Forms\Components\FileUpload::make('file')
                     ->required(),
                 Forms\Components\Toggle::make('approval')
-                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === $penilaian->user->jabatan->parent->id)),
+                    ->disabled(fn (Penilaian $penilaian) => !(auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? auth()->user()->jabatan_id))),
             ]);
     }
 
@@ -110,7 +110,7 @@ class PenilaianResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('file')
-                    ->simpleLightbox(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
+                    ->simpleLightbox(),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
                 Tables\Columns\IconColumn::make('approval')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
