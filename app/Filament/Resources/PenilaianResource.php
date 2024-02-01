@@ -111,8 +111,9 @@ class PenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('nilai')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('file')
-                    ->simpleLightbox(env('APP_URL') . "storage/{file}"),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
+                Tables\Columns\TextColumn::make('file')
+                    ->formatStateUsing(fn ($state) => (explode('.', $state)[1] ?? 'file'))
+                    ->url(fn ($state) => env('APP_URL') . "/storage/". $state, true),//(fn (Penilaian $record) => env('APP_URL'). "storage/" . $record->file),
                 Tables\Columns\IconColumn::make('approval')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
