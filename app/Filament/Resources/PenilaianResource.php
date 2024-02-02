@@ -3,7 +3,10 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Periode;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Models\Penilaian;
 use Filament\Tables\Table;
@@ -11,11 +14,10 @@ use Filament\Resources\Resource;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\PenilaianResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PenilaianResource\RelationManagers;
-use Filament\Forms\Set;
-use Filament\Tables\Columns\Summarizers\Sum;
 
 class PenilaianResource extends Resource
 {
@@ -34,6 +36,17 @@ class PenilaianResource extends Resource
     protected static ?string $navigationLabel = 'Penilaian Kredit';
 
     protected static ?string $slug = 'penilaian-kredit';
+
+    public static function getEloquentQuery(): Builder
+    {
+        $periodeAktifId = Periode::where('is_active', true)->first()->id;
+        $userAuth = auth()->user();
+        if ($userAuth->hasRole(['super_admin'])) {
+            return parent::getEloquentQuery(); 
+        } else {
+            return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhere('user_id', User::find($userAuth->id)->children->id ?? $userAuth->id)->where('periode_id', $periodeAktifId);
+        }
+    }
 
     public static function form(Form $form): Form
     {
@@ -150,13 +163,16 @@ class PenilaianResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('pegawai')
-                    ->relationship('user', 'name', fn (Builder $query) => $query)
+                    ->relationship('user', 'name', fn (Builder $query) => $query->where('id', auth()->user()->id)->orWhere('id', User::find(auth()->user()->id)->children->id ?? auth()->user()->id))
+                    ->default(fn () => auth()->user()->id)
             ])
             ->groups([
                 Group::make('user.name')
                     ->titlePrefixedWithLabel(false)
-                    ->label('Pegawai')
-                    //->orderQueryUsing(fn (Builder $query, string $direction) => $query->orderBy('jurusan_id', 'asc')->orderBy('ranking', $direction)),
+                    ->label('Pegawai'),
+                Group::make('leluhur')
+                    ->titlePrefixedWithLabel(false)
+                    ->label('Unsur'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -168,7 +184,8 @@ class PenilaianResource extends Resource
             ])->recordUrl(
                 null
             )
-            ->defaultGroup('user.name')
+            ->defaultGroup('leluhur')
+            ->defaultPaginationPageOption('all')
             ->groupsOnly(false);
     }
 
