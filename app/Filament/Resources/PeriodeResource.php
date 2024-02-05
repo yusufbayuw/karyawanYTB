@@ -42,7 +42,12 @@ class PeriodeResource extends Resource
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Status')
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(function ($state) {
+                        if ($state) {
+                            Periode::where('is_active', true)->update(['is_active' => false]);
+                        }
+                    }),
             ]);
     }
 
@@ -58,6 +63,18 @@ class PeriodeResource extends Resource
                 Tables\Columns\TextColumn::make('tgl_selesai')
                     ->date()
                     ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Status Aktif')
+                    ->boolean()
+                    ->action(function($record, $column) {
+                        $name = $column->getName();
+                        if (!$record->$name) {
+                            Periode::where('is_active', true)->update(['is_active' => false]);
+                        }
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
