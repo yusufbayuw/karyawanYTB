@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ParameterResource\Pages;
-use App\Filament\Resources\ParameterResource\RelationManagers;
-use App\Models\Parameter;
+use App\Filament\Resources\TingkatJabatanResource\Pages;
+use App\Filament\Resources\TingkatJabatanResource\RelationManagers;
+use App\Models\TingkatJabatan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,21 +13,19 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ParameterResource extends Resource
+class TingkatJabatanResource extends Resource
 {
-    protected static ?string $model = Parameter::class;
+    protected static ?string $model = TingkatJabatan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Parameter';
+    protected static ?string $modelLabel = 'Tingkat';
 
-    protected static ?string $navigationGroup = 'Angka Kredit';
+    protected static ?string $navigationGroup = 'Pegawai';
 
-    protected static ?int $navigationSort = 11;
+    protected static ?string $navigationLabel = 'Tingkat';
 
-    protected static ?string $navigationLabel = 'Parameter';
-
-    protected static ?string $slug = 'angka-kredit-parameter';
+    protected static ?string $slug = 'pegawai-tingkat';
 
     public static function form(Form $form): Form
     {
@@ -36,7 +34,8 @@ class ParameterResource extends Resource
                 Forms\Components\Select::make('golongan_id')
                     ->relationship('golongan', 'nama'),
                 Forms\Components\TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('parent_id')
                     ->required()
                     ->numeric()
@@ -45,10 +44,6 @@ class ParameterResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('hasil_kerja')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('angka_kredit')
-                    ->numeric(),
             ]);
     }
 
@@ -56,18 +51,16 @@ class ParameterResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('golongan.nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('parent.title')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('order')
+                Tables\Columns\TextColumn::make('parent_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('hasil_kerja')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('angka_kredit')
+                Tables\Columns\TextColumn::make('order')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -102,9 +95,9 @@ class ParameterResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListParameters::route('/'),
-            'create' => Pages\CreateParameter::route('/create'),
-            'edit' => Pages\EditParameter::route('/{record}/edit'),
+            'index' => Pages\ListTingkatJabatans::route('/'),
+            'create' => Pages\CreateTingkatJabatan::route('/create'),
+            'edit' => Pages\EditTingkatJabatan::route('/{record}/edit'),
         ];
     }
 }

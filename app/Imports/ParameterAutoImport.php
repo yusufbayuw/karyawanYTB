@@ -31,6 +31,8 @@ class ParameterAutoImport implements ToCollection
                 $hasilKerja = $row[5] ?? null;
                 $angkaKredit = $row[6] ?? null;
                 $golonganId = $row[7] ?? null;
+                $kategoriId = $row[8] ?? null;
+
 
                 if ($hasilKerja !== null && $angkaKredit !== null) {
                     $unsur = $row[0];
@@ -47,10 +49,12 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record = Parameter::create([
                             'title' => $uraian2,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian3Record->parent_id = $uraian2Record->id;
                         $uraian3Record->save();
@@ -59,6 +63,7 @@ class ParameterAutoImport implements ToCollection
                         $uraian1Record = Parameter::create([
                             'title' => $uraian1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record->parent_id = $uraian1Record->id;
                         $uraian2Record->save();
@@ -67,6 +72,7 @@ class ParameterAutoImport implements ToCollection
                         $subUnsurRecord = Parameter::create([
                             'title' => $subUnsur,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1Record->parent_id = $subUnsurRecord->id;
                         $uraian1Record->save();
@@ -76,6 +82,7 @@ class ParameterAutoImport implements ToCollection
                             'title' => $unsur,
                             'parent_id' => -1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurRecord->parent_id = $unsurRecord->id;
                         $subUnsurRecord->save();
@@ -87,6 +94,7 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                     } elseif ($uraian3 !== null && $uraian2 !== null && $uraian1 == null) {
                         $uraian3Record = Parameter::create([
@@ -94,11 +102,13 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record = Parameter::create([
                             'title' => $uraian2,
                             'parent_id' => $uraian1PrevId,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian3Record->parent_id = $uraian2Record->id;
                         $uraian3Record->save();
@@ -109,10 +119,12 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record = Parameter::create([
                             'title' => $uraian2,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2PrevId = $uraian2Record->id;
                         $uraian3Record->parent_id = $uraian2Record->id;
@@ -121,6 +133,7 @@ class ParameterAutoImport implements ToCollection
                             'title' => $uraian1,
                             'parent_id' => $subUnsurPrevId,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1PrevId = $uraian1Record->id;
                         $uraian2Record->parent_id = $uraian1Record->id;
@@ -131,10 +144,12 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record = Parameter::create([
                             'title' => $uraian2,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2PrevId = $uraian2Record->id;
                         $uraian3Record->parent_id = $uraian2Record->id;
@@ -142,6 +157,7 @@ class ParameterAutoImport implements ToCollection
                         $uraian1Record = Parameter::create([
                             'title' => $uraian1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1PrevId = $uraian1Record->id;
                         $uraian2Record->parent_id = $uraian1Record->id;
@@ -150,6 +166,7 @@ class ParameterAutoImport implements ToCollection
                             'title' => $subUnsur,
                             'parent_id' => $unsurPrevId,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurPrevId = $subUnsurRecord->id;
                         $uraian1Record->parent_id = $subUnsurRecord->id;
@@ -164,11 +181,13 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         
                         $uraian1Record = Parameter::create([
                             'title' => $uraian1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record->parent_id = $uraian1Record->id;
                         $uraian2Record->save();
@@ -177,6 +196,7 @@ class ParameterAutoImport implements ToCollection
                         $subUnsurRecord = Parameter::create([
                             'title' => $subUnsur,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1Record->parent_id = $subUnsurRecord->id;
                         $uraian1Record->save();
@@ -186,6 +206,7 @@ class ParameterAutoImport implements ToCollection
                             'title' => $unsur,
                             'parent_id' => -1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurRecord->parent_id = $unsurRecord->id;
                         $subUnsurRecord->save();
@@ -197,6 +218,7 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                     } elseif ($uraian3 == null && $uraian2 !== null && $uraian1 !== null && $subUnsur == null) {
                         $uraian2Record = Parameter::create([
@@ -204,11 +226,13 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1Record = Parameter::create([
                             'title' => $uraian1,
                             'parent_id' => $subUnsurPrevId,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian2Record->parent_id = $uraian1Record->id;
                         $uraian2Record->save();
@@ -219,10 +243,12 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1Record = Parameter::create([
                             'title' => $uraian1,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1PrevId = $uraian1Record->id;
                         $uraian2Record->parent_id = $uraian1Record->id;
@@ -231,6 +257,7 @@ class ParameterAutoImport implements ToCollection
                             'title' => $subUnsur,
                             'parent_id' => $unsurPrevId,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurPrevId = $subUnsurRecord->id;
                         $uraian1Record->parent_id = $subUnsurRecord->id;
@@ -246,11 +273,13 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         
                         $subUnsurRecord = Parameter::create([
                             'title' => $subUnsur,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $uraian1Record->parent_id = $subUnsurRecord->id;
                         $uraian1Record->save();
@@ -259,6 +288,7 @@ class ParameterAutoImport implements ToCollection
                         $unsurRecord = Parameter::create([
                             'title' => $unsur,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurRecord->parent_id = $unsurRecord->id;
                         $subUnsurRecord->save();
@@ -270,6 +300,7 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                     } elseif ($uraian3 == null && $uraian2 == null && $uraian1 !== null && $subUnsur !== null && $unsur == null) {
                         $uraian1Record = Parameter::create([
@@ -277,11 +308,13 @@ class ParameterAutoImport implements ToCollection
                             'hasil_kerja' => $hasilKerja,
                             'angka_kredit' => $angkaKredit,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         
                         $subUnsurRecord = Parameter::create([
                             'title' => $subUnsur,
                             'golongan_id' => $golonganId,
+                            'kategori_id' => $kategoriId,
                         ]);
                         $subUnsurPrevId = $subUnsurRecord->id;
                         $uraian1Record->parent_id = $subUnsurRecord->id;

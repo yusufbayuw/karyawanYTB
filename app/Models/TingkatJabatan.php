@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use SolutionForest\FilamentTree\Concern\ModelTree;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use SolutionForest\FilamentTree\Concern\ModelTree;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-class Parameter extends Model
+class TingkatJabatan extends Model
 {
     use HasFactory, ModelTree; 
     use HasRecursiveRelationships {
@@ -20,15 +19,5 @@ class Parameter extends Model
     public function golongan(): BelongsTo
     {
         return $this->belongsTo(Golongan::class, 'golongan_id', 'id');
-    }
-
-    public function penilaian(): HasMany
-    {
-        return $this->hasMany(Penilaian::class, 'parameter_id', 'id');
-    }
-
-    public function kategori(): BelongsTo
-    {
-        return $this->belongsTo(KategoriPenilaian::class, 'kategori_id', 'id');
     }
 }

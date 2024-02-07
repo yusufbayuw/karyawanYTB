@@ -17,15 +17,17 @@ class JabatanResource extends Resource
 {
     protected static ?string $model = Jabatan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
 
     protected static ?string $modelLabel = 'Jabatan';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'Pegawai';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Jabatan';
 
-    protected static ?string $slug = 'jabatan';
+    protected static ?string $slug = 'pegawai-jabatan';
 
     public static function form(Form $form): Form
     {
@@ -50,6 +52,8 @@ class JabatanResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Jabatan')
                     ->searchable(),

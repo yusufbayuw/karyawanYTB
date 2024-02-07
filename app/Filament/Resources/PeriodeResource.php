@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PeriodeResource\Pages;
-use App\Filament\Resources\PeriodeResource\RelationManagers;
 use App\Models\Periode;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PeriodeResource extends Resource
 {
@@ -19,15 +16,15 @@ class PeriodeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?string $modelLabel = 'Periode Pengumpulan';
+    protected static ?string $modelLabel = 'Periode';
 
     protected static ?string $navigationGroup = 'Angka Kredit';
 
     protected static ?int $navigationSort = 10;
 
-    protected static ?string $navigationLabel = 'Periode Pengumpulan';
+    protected static ?string $navigationLabel = 'Periode';
 
-    protected static ?string $slug = 'periode-pengumpulan';
+    protected static ?string $slug = 'angka-kredit-periode';
 
     public static function form(Form $form): Form
     {

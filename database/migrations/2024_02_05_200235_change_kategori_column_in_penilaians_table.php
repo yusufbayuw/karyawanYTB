@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::table('penilaians', function (Blueprint $table) {
             $table->foreignId('kategori_id')->nullable()->constrained('kategori_penilaians')->nullOnDelete();
         });
+
+        Schema::table('parameters', function (Blueprint $table) {
+            $table->foreignId('kategori_id')->nullable()->constrained('kategori_penilaians')->nullOnDelete();
+        });
     }
 
     /**
@@ -22,6 +26,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('penilaians', function (Blueprint $table) {
+            $table->dropColumn('kategori_id');
+        });
+
+        Schema::table('parameters', function (Blueprint $table) {
             $table->dropColumn('kategori_id');
         });
     }

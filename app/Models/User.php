@@ -75,4 +75,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
     }
+
+    public function tingkat(): BelongsTo
+    {
+        return $this->belongsTo(TingkatJabatan::class, 'tingkat_id', 'id');
+    }
 }

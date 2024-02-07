@@ -13,13 +13,13 @@ use Filament\Forms\Form;
 use App\Models\Penilaian;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Models\KategoriPenilaian;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\PenilaianResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\PenilaianResource\RelationManagers;
+
 
 class PenilaianResource extends Resource
 {
@@ -29,15 +29,15 @@ class PenilaianResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
-    protected static ?string $modelLabel = 'Penilaian Kredit';
+    protected static ?string $modelLabel = 'Penilaian';
 
     protected static ?string $navigationGroup = 'Angka Kredit';
 
     protected static ?int $navigationSort = 12;
 
-    protected static ?string $navigationLabel = 'Penilaian Kredit';
+    protected static ?string $navigationLabel = 'Penilaian';
 
-    protected static ?string $slug = 'penilaian-kredit';
+    protected static ?string $slug = 'angka-kredit-penilaian';
 
     public static function getEloquentQuery(): Builder
     {
@@ -139,7 +139,7 @@ class PenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('parameter.hasil_kerja')
                     ->sortable()
                     ->label('Hasil Kerja')
-                    ->badge()
+                    ->wrap()
                     ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . $penilaian->parameter->angka_kredit),
                 Tables\Columns\TextColumn::make('nilai')
                     ->label('Kuantitas')
@@ -187,19 +187,19 @@ class PenilaianResource extends Resource
                             ->options(fn (Get $get) => User::where('id', auth()->user()->id)->orWhere('id', User::find(auth()->user()->id)->children->id ?? auth()->user()->id)->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
                             ->disabled(fn (Get $get) => $get('unit_filter') == null)
                             ->default(auth()->user()->id),
+                        Forms\Components\Select::make('kategori_filter')
+                            ->label('Pilih Kategori')
+                            ->options(fn (Get $get) => KategoriPenilaian::all()->pluck('nama', 'id'))
+                            ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->where(
-                                'user_id',
-                                $data['pegawai_filter']
-                            );
+                        return $query->where('user_id',$data['pegawai_filter'])->where('kategori_id', $data['kategori_filter']);
                     })->indicateUsing(function (array $data): ?string {
-                        if (!$data['pegawai_filter'] || !$data['unit_filter']) {
+                        if (!$data['pegawai_filter'] || !$data['unit_filter'] || !$data['kategori_filter']) {
                             return null;
                         }
 
-                        return 'Pegawai ' . Unit::find($data['unit_filter'])->nama . ': ' . User::find($data['pegawai_filter'])->name;
+                        return Unit::find($data['unit_filter'])->nama . ': ' . User::find($data['pegawai_filter'])->name . ' - ' . (KategoriPenilaian::find($data['kategori_filter'])->nama ?? null);
                     }),
             ])
             ->groups([

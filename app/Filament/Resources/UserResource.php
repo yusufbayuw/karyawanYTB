@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\TingkatJabatan;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +26,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Pegawai';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationLabel = 'Pegawai';
 
     protected static ?string $slug = 'pegawai';
@@ -35,7 +39,11 @@ class UserResource extends Resource
                 Forms\Components\Select::make('unit_id')
                     ->relationship('unit', 'nama'),
                 Forms\Components\Select::make('golongan_id')
-                    ->relationship('golongan', 'nama'),
+                    ->relationship('golongan', 'nama')
+                    ->live(),
+                Forms\Components\Select::make('tingkat_id')
+                    ->options(fn (Get $get) => TingkatJabatan::where('golongan_id', $get('golongan_id'))->pluck('title', 'id'))
+                    ->disabled(fn (Get $get) => $get('golongan_id') === null),
                 Forms\Components\Select::make('jabatan_id')
                     ->relationship('jabatan', 'title'),
                 Forms\Components\TextInput::make('name')
@@ -73,14 +81,13 @@ class UserResource extends Resource
                     ->label('Jabatan')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('golongan.nama')
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn (User $user) => $user->golongan->nama . ' - ' . $user->tingkat->title),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
+                    ->label('NIP')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

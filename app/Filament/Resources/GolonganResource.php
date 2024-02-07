@@ -21,11 +21,11 @@ class GolonganResource extends Resource
 
     protected static ?string $modelLabel = 'Golongan';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'Pegawai';
 
     protected static ?string $navigationLabel = 'Golongan';
 
-    protected static ?string $slug = 'golongan';
+    protected static ?string $slug = 'pegawai-golongan';
 
     public static function form(Form $form): Form
     {
@@ -41,6 +41,8 @@ class GolonganResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

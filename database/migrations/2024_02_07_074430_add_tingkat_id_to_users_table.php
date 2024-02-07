@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('parameters', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true);
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('tingkat_id')->nullable()->constrained('tingkat_jabatans')->nullOnDelete();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('parameters', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('tingkat_id');
         });
     }
 };

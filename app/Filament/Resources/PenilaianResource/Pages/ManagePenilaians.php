@@ -46,13 +46,13 @@ class ManagePenilaians extends ManageRecords
                         $parameterGolongans = Parameter::where('golongan_id', $userGolongan);
                         // loop parameter leaf 
                         foreach ($parameterGolongans->isLeaf()->get() as $key => $parameterGolongan) {
-
                             // assign ke user_id , periode_id, dan parameter_id
                             Penilaian::firstOrCreate([
                                 'user_id' => $user->id,
                                 'parameter_id' => $parameterGolongan->id,
                                 'periode_id' => $periodeId,
                                 'leluhur' => $parameterGolongan->ancestors->last()->title,
+                                'kategori_id' => $parameterGolongan->kategori_id,
                             ]);
                         }
 
@@ -70,6 +70,7 @@ class ManagePenilaians extends ManageRecords
                                     'parameter_id' => $parameterGolongan->id,
                                     'periode_id' => $periodeId,
                                     'leluhur' => $parameterGolongan->ancestors->last()->title,
+                                    'kategori_id' => $parameterGolongan->kategori_id,
                                 ]);
                             }
                         }

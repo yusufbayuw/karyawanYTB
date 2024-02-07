@@ -25,4 +25,9 @@ class Penilaian extends Model
     {
         return $this->belongsTo(Parameter::class, 'parameter_id', 'id');
     }
+
+    public function kategori(): BelongsTo
+    {
+        return $this->belongsTo(KategoriPenilaian::class, 'kategori_id', 'id');
+    }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\CustomMenuWidget;
-use App\Filament\Widgets\menuGrid;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use App\Filament\Auth\Login;
+use App\Filament\Widgets\menuGrid;
 use Filament\Support\Colors\Color;
+use App\Filament\Widgets\CustomMenuWidget;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Session\Middleware\StartSession;
@@ -17,13 +18,13 @@ use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Swis\Filament\Backgrounds\ImageProviders\Triangles;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
-use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
-use Swis\Filament\Backgrounds\ImageProviders\Triangles;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -33,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()    
             ->id('app')
             ->path('app')
-            ->login()
+            ->login(Login::class)
             ->darkMode(false)
             ->brandName('Kepegawaian YTB')
             ->brandLogo(asset('images/brand.png'))

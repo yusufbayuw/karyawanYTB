@@ -2,30 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UnitResource\Pages;
-use App\Filament\Resources\UnitResource\RelationManagers;
-use App\Models\Unit;
+use App\Filament\Resources\KategoriPenilaianResource\Pages;
+use App\Models\KategoriPenilaian;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UnitResource extends Resource
+
+class KategoriPenilaianResource extends Resource
 {
-    protected static ?string $model = Unit::class;
+    protected static ?string $model = KategoriPenilaian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
-    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $modelLabel = 'Kategori';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'Angka Kredit';
 
-    protected static ?string $navigationLabel = 'Unit';
+    protected static ?int $navigationSort = 1;
 
-    protected static ?string $slug = 'unit';
+    protected static ?string $navigationLabel = 'Kategori';
+
+    protected static ?string $slug = 'angka-kredit-kategori';
 
     public static function form(Form $form): Form
     {
@@ -77,9 +77,9 @@ class UnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUnits::route('/'),
-            'create' => Pages\CreateUnit::route('/create'),
-            'edit' => Pages\EditUnit::route('/{record}/edit'),
+            'index' => Pages\ListKategoriPenilaians::route('/'),
+            'create' => Pages\CreateKategoriPenilaian::route('/create'),
+            'edit' => Pages\EditKategoriPenilaian::route('/{record}/edit'),
         ];
     }
 }
