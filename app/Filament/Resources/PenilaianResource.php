@@ -46,7 +46,7 @@ class PenilaianResource extends Resource
         if ($userAuth->hasRole(['super_admin'])) {
             return parent::getEloquentQuery();
         } else {
-            return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhere('user_id', User::find($userAuth->id)->children->id ?? $userAuth->id)->where('periode_id', $periodeAktifId);
+            return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhereIn('user_id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('periode_id', $periodeAktifId);
         }
     }
 
@@ -184,7 +184,7 @@ class PenilaianResource extends Resource
                             ->disabled(!auth()->user()->hasRole(['super_admin'])),
                         Forms\Components\Select::make('pegawai_filter')
                             ->label('Pilih Karyawan')
-                            ->options(fn (Get $get) => User::where('id', auth()->user()->id)->orWhere('id', User::find(auth()->user()->id)->children->id ?? auth()->user()->id)->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
+                            ->options(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
                             ->disabled(fn (Get $get) => $get('unit_filter') == null)
                             ->default(auth()->user()->id),
                         Forms\Components\Select::make('kategori_filter')
