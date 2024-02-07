@@ -64,10 +64,12 @@ class PenilaianResource extends Resource
                     ->disabled(),
                 Forms\Components\TextInput::make('nilai')
                     ->label('Kuantitas')
-                    ->suffix(fn (Penilaian $penilaian) => $penilaian->parameter->hasil_kerja)
+                    ->hint(fn (Penilaian $penilaian) => $penilaian->parameter->hasil_kerja)
                     ->afterStateUpdated(function (Set $set, $state, Penilaian $record) {
                         if ($record->approval) {
                             $set('jumlah', (float)$state * (float)$record->parameter->angka_kredit);
+                        } else {
+                            $set('jumlah', null);
                         }
                     })
                     ->required()
@@ -81,6 +83,8 @@ class PenilaianResource extends Resource
                     ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
                         if ($state) {
                             $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
+                        } else {
+                            $set('jumlah', null);
                         }
                     }),
                 Forms\Components\Hidden::make('jumlah'),
@@ -157,6 +161,16 @@ class PenilaianResource extends Resource
                             $record->update([
                                 $name => !$record->$name
                             ]);
+                            
+                            if ($record->$name) {
+                                $penilaian->update([
+                                    'jumlah' => (float)$penilaian->nilai * (float)$penilaian->parameter->angka_kredit
+                                ]);
+                            } else {
+                                $penilaian->update([
+                                    'jumlah' => null
+                                ]);
+                            }
                         }
                     }),
                 Tables\Columns\TextColumn::make('jumlah')
