@@ -22463,6 +22463,17 @@
      
 }
 
+    namespace Staudenmeir\LaravelCte\Query { 
+            /**
+     * 
+     *
+     */ 
+        class Builder {
+         
+    }
+     
+}
+
 
 namespace  { 
             class App extends \Illuminate\Support\Facades\App {}
