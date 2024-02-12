@@ -39,16 +39,15 @@ class PenilaianResource extends Resource
 
     protected static ?string $slug = 'angka-kredit-penilaian';
 
-    public static function getEloquentQuery(): Builder
+    /* public static function getEloquentQuery(): Builder
     {
-        $periodeAktifId = Periode::where('is_active', true)->first()->id;
         $userAuth = auth()->user();
         if ($userAuth->hasRole(['super_admin'])) {
             return parent::getEloquentQuery();
         } else {
-            return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhereIn('user_id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('periode_id', $periodeAktifId);
+            return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhereIn('user_id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null));
         }
-    }
+    } */
 
     public static function form(Form $form): Form
     {
@@ -191,6 +190,11 @@ class PenilaianResource extends Resource
                     ->default(fn () => auth()->user()->id), */
                 Filter::make('ppak')
                     ->form([
+                        Forms\Components\Select::make('periode_filter')
+                            ->label('Pilih Periode')
+                            ->options(fn () => Periode::all()->pluck('nama', 'id'))
+                            ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
+                            ->disabled(!auth()->user()->hasRole(['super_admin'])),
                         Forms\Components\Select::make('unit_filter')
                             ->label('Pilih Unit')
                             ->options(fn () => Unit::all()->pluck('nama', 'id'))
@@ -207,9 +211,9 @@ class PenilaianResource extends Resource
                             ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query->where('user_id',$data['pegawai_filter'])->where('kategori_id', $data['kategori_filter']);
+                        return $query->where('periode_id', $data['periode_filter'])->where('user_id',$data['pegawai_filter'])->where('kategori_id', $data['kategori_filter']);
                     })->indicateUsing(function (array $data): ?string {
-                        if (!$data['pegawai_filter'] || !$data['unit_filter'] || !$data['kategori_filter']) {
+                        if (!$data['pegawai_filter'] || !$data['unit_filter'] || !$data['kategori_filter'] || !$data['periode_filter']) {
                             return null;
                         }
 
