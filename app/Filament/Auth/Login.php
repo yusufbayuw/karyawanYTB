@@ -23,19 +23,20 @@ class Login extends BaseAuth
 
     protected function getEmailFormComponent(): Component
     {
-        return TextInput::make('login')
+        return TextInput::make('email')
         ->label('NIP')
         ->required()
         ->autocomplete()
-        ->autofocus();
+        ->autofocus()
+        ->extraInputAttributes(['tabindex' => 1]);;
     }
 
     protected function getCredentialsFromFormData(array $data): array
     {
-        $login_type = filter_var($data['login'], FILTER_VALIDATE_EMAIL ) ? 'email' : 'username';
+        $login_type = filter_var($data['email'], FILTER_VALIDATE_EMAIL ) ? 'email' : 'username';
  
         return [
-            $login_type => $data['login'],
+            $login_type => $data['email'],
             'password'  => $data['password'],
         ];
     }
