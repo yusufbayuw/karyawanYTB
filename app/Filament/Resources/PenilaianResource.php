@@ -240,6 +240,7 @@ class PenilaianResource extends Resource
             )
             ->defaultGroup('leluhur')
             ->defaultPaginationPageOption('all')
+            ->groupingSettingsHidden()
             ->groupsOnly(fn () => auth()->user()->gruop_penilaian);
     }
 
