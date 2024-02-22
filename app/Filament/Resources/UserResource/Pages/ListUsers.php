@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use App\Models\User;
 use Filament\Actions;
 use App\Imports\UpdateUserImport;
 use App\Filament\Resources\UserResource;
@@ -16,6 +17,14 @@ class ListUsers extends ListRecords
     {
         $userAuthSpAd = auth()->user()->hasRole('super_admin');
         return [
+            Actions\Action::make('Basic Role')
+                ->icon('heroicon-o-arrow-path')
+                ->color('warning')
+                ->action(function () {
+                    User::all()->each(function ($user) {
+                        $user->assignRole('panel_user');
+                    });
+                }),
             ExcelImportAction::make('update')
                 ->label('Update')
                 ->icon('heroicon-o-arrow-path')
