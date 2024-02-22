@@ -76,10 +76,12 @@ class ManagePenilaians extends ManageRecords
                         }
                     }
                 })
-                ->color("primary"),
+                ->color("primary")
+                ->hidden(fn () => auth()->user()->hasRole(['super_admin'])),
             ExcelImportAction::make()
                 ->color("primary")
-                ->icon('heroicon-o-arrow-up-tray'),
+                ->icon('heroicon-o-arrow-up-tray')
+                ->hidden(fn () => auth()->user()->hasRole(['super_admin'])),
             Actions\CreateAction::make(),
         ];
     }
