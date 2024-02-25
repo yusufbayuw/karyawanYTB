@@ -22,6 +22,7 @@ use Swis\Filament\Backgrounds\ImageProviders\Triangles;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
@@ -33,13 +34,22 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()    
             ->id('app')
-            ->path('app')
+            ->path('')
             ->login(Login::class)
             ->darkMode(false)
             ->brandName('Kepegawaian YTB')
             ->brandLogo(asset('images/brand.png'))
             ->brandLogoHeight('3rem')
             ->profile()
+            ->topNavigation()
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Pegawai')
+                    ->icon('heroicon-s-user-group'),
+                NavigationGroup::make()
+                    ->label('Pengaturan')
+                    ->icon('heroicon-s-cog-6-tooth'),
+            ])
             ->favicon(asset('images/favicon.png'))
             ->sidebarCollapsibleOnDesktop()
             ->colors([
