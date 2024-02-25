@@ -11,6 +11,8 @@ use App\Models\Parameter;
 use App\Models\Penilaian;
 use Filament\Resources\Pages\ManageRecords;
 use App\Filament\Resources\PenilaianResource;
+use App\Filament\Resources\PenilaianResource\Widgets\AbcIdentityWidget;
+use App\Filament\Resources\PenilaianResource\Widgets\AcuanPenilaianWidget;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Resources\Pages\ListRecords\Tab;
 
@@ -50,7 +52,8 @@ class ManagePenilaians extends ManageRecords
                             Penilaian::updateOrCreate([
                                 'user_id' => $user->id,
                                 'parameter_id' => $parameterGolongan->id,
-                                'periode_id' => $periodeId,],[
+                                'periode_id' => $periodeId,
+                            ], [
                                 'leluhur' => $parameterGolongan->ancestors->last()->title,
                                 'kategori_id' => $parameterGolongan->kategori_id,
                             ]);
@@ -68,7 +71,8 @@ class ManagePenilaians extends ManageRecords
                                 Penilaian::updateOrCreate([
                                     'user_id' => $user->id,
                                     'parameter_id' => $parameterGolongan->id,
-                                    'periode_id' => $periodeId,],[
+                                    'periode_id' => $periodeId,
+                                ], [
                                     'leluhur' => $parameterGolongan->ancestors->last()->title,
                                     'kategori_id' => $parameterGolongan->kategori_id,
                                 ]);
@@ -86,9 +90,12 @@ class ManagePenilaians extends ManageRecords
         ];
     }
 
-    protected function getTableRecordUrlUsing(): ?Closure
+    protected function getHeaderWidgets(): array
     {
-        return null;
+        return [
+            AbcIdentityWidget::class,
+            AcuanPenilaianWidget::class
+        ];
     }
 
     /* public function getTabs(): array

@@ -82,7 +82,7 @@ class PenilaianResource extends Resource
                     ->required(),
                 Forms\Components\Toggle::make('approval')
                     ->label('Status Verifikasi')
-                    ->disabled(fn (Penilaian $penilaian) => !((auth()->user()->jabatan_id === ($penilaian->user->jabatan->parent->id ?? false)) || auth()->user()->hasRole(['super_admin'])))
+                    ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))
                     ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
                         if ($state) {
                             $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
@@ -241,13 +241,14 @@ class PenilaianResource extends Resource
                             $indicators[] = Indicator::make('Data tidak ditemukan')->removable(false);
                         } else {
                             $pegawai = User::find($data['pegawai_filter']);
-                            $indicators[] = Indicator::make(Unit::find($data['unit_filter'])->nama . ': ' . $pegawai->name . ' - ' . $pegawai->golongan->nama . ' ' . $pegawai->tingkat->title . ' (' . (KategoriPenilaian::find($data['kategori_filter'])->nama  ?? null) . ')')->removable(false);
+                            $indicators[] = Indicator::make(Unit::find($data['unit_filter'])->nama . ': ' . $pegawai->name . ' - ' . $pegawai->golongan->nama . ' ' . $pegawai->tingkat->title )->removable(false);
                         }
 
                         return $indicators;
                     }),
             ])
             ->persistFiltersInSession(true)
+            ->deferFilters()
             ->groups([
                 Group::make('user.name')
                     ->titlePrefixedWithLabel(false)
@@ -268,6 +269,8 @@ class PenilaianResource extends Resource
             )
             ->defaultGroup('leluhur')
             ->defaultPaginationPageOption('all')
+            ->recordAction(fn () => null)
+            ->recordUrl(fn () => null)
             ->groupingSettingsHidden()
             ->groupsOnly(fn () => auth()->user()->gruop_penilaian);
     }

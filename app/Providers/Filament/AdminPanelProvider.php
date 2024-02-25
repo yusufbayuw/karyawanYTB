@@ -91,6 +91,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentBackgroundsPlugin::make()
                     ->imageProvider(Triangles::make()),
                 SimpleLightBoxPlugin::make(),
-            ]);
+            ])
+            ->unsavedChangesAlerts();
     }
 }
