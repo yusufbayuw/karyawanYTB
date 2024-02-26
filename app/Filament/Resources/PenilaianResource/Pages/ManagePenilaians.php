@@ -63,7 +63,7 @@ class ManagePenilaians extends ManageRecords
                         $golongan = Golongan::find($userGolongan);
                         if ($golongan) {
                             $namaGolongan = explode(' - ', $golongan->nama)[0] . ' - ' . config('jabatan.semua');
-                            if (Golongan::where('nama', $namaGolongan)->first()->id) {
+                            if (Golongan::where('nama', $namaGolongan)->first()->id ?? null) {
                                 $golonganId = Golongan::where('nama', $namaGolongan)->first()->id;
                                 $parameterGolongans = Parameter::where('golongan_id', $golonganId);
 
