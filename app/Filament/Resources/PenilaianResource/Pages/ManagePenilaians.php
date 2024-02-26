@@ -63,19 +63,21 @@ class ManagePenilaians extends ManageRecords
                         $golongan = Golongan::find($userGolongan);
                         if ($golongan) {
                             $namaGolongan = explode(' - ', $golongan->nama)[0] . ' - ' . config('jabatan.semua');
-                            $golonganId = Golongan::where('nama', $namaGolongan)->first()->id;
-                            $parameterGolongans = Parameter::where('golongan_id', $golonganId);
+                            if (Golongan::where('nama', $namaGolongan)->first()->id) {
+                                $golonganId = Golongan::where('nama', $namaGolongan)->first()->id;
+                                $parameterGolongans = Parameter::where('golongan_id', $golonganId);
 
-                            foreach ($parameterGolongans->isLeaf()->get() as $key => $parameterGolongan) {
+                                foreach ($parameterGolongans->isLeaf()->get() as $key => $parameterGolongan) {
 
-                                Penilaian::updateOrCreate([
-                                    'user_id' => $user->id,
-                                    'parameter_id' => $parameterGolongan->id,
-                                    'periode_id' => $periodeId,
-                                ], [
-                                    'leluhur' => $parameterGolongan->ancestors->last()->title,
-                                    'kategori_id' => $parameterGolongan->kategori_id,
-                                ]);
+                                    Penilaian::updateOrCreate([
+                                        'user_id' => $user->id,
+                                        'parameter_id' => $parameterGolongan->id,
+                                        'periode_id' => $periodeId,
+                                    ], [
+                                        'leluhur' => $parameterGolongan->ancestors->last()->title,
+                                        'kategori_id' => $parameterGolongan->kategori_id,
+                                    ]);
+                                }
                             }
                         }
                     }
