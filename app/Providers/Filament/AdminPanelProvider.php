@@ -37,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->login(Login::class)
             ->darkMode(false)
-            ->brandName('Kepegawaian YTB')
+            ->brandName('PPAK')
             ->brandLogo(asset('images/brand.png'))
             ->brandLogoHeight('3rem')
             ->profile()
@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                //Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
