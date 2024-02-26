@@ -147,7 +147,7 @@ class PenilaianResource extends Resource
                     ->sortable()
                     ->label('Hasil Kerja')
                     ->wrap()
-                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . $penilaian->parameter->angka_kredit),
+                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . str_replace('.',',',$penilaian->parameter->angka_kredit)),
                 Tables\Columns\TextColumn::make('nilai')
                     ->label('Kuantitas')
                     ->numeric()
