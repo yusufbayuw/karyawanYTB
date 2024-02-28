@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KPIPenilaianResource\Pages;
-use App\Filament\Resources\KPIPenilaianResource\RelationManagers;
-use App\Models\KPIPenilaian;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\KPIPenilaian;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\KPIPenilaianResource\Pages;
+use App\Filament\Resources\KPIPenilaianResource\RelationManagers;
 
 class KPIPenilaianResource extends Resource
 {
@@ -35,14 +36,17 @@ class KPIPenilaianResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name'),
-                Forms\Components\TextInput::make('kpi_kontrak_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('kpi_periode_id')
-                    ->numeric(),
+                Forms\Components\Select::make('kpi_kontrak_id')
+                    ->relationship('kontrak', 'nama')
+                    ->searchable(),
+                Forms\Components\Select::make('kpi_periode_id')
+                    ->relationship('periode', 'nama'),
                 Forms\Components\TextInput::make('realisasi')
-                    ->numeric(),
+                    ->numeric()
+                    ,
                 Forms\Components\TextInput::make('total_realisasi')
-                    ->numeric(),
+                    ->numeric()
+                    ,
             ]);
     }
 
@@ -53,11 +57,9 @@ class KPIPenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kpi_kontrak_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('kontrak.nama')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kpi_periode_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('periode.nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('realisasi')
                     ->numeric()

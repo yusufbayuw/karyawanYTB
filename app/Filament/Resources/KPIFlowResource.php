@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KPIFlowResource\Pages;
 use App\Filament\Resources\KPIFlowResource\RelationManagers;
+use App\Models\Jabatan;
 use App\Models\KPIFlow;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -36,7 +37,13 @@ class KPIFlowResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('urutan'),
+                Forms\Components\Repeater::make('urutan')
+                    ->schema([
+                        Forms\Components\Select::make('jabatan')
+                            ->options(fn () => Jabatan::all()->pluck('title', 'id'))
+                            ->searchable()
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                    ]),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
             ]);

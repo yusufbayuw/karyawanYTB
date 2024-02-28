@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Infak;
 use App\Models\Cabang;
 use App\Models\Cicilan;
+use App\Models\KPIPenilaian;
 use App\Models\Periode;
 use App\Models\Pinjaman;
 use App\Models\Penilaian;
@@ -14,6 +15,7 @@ use App\Observers\UserObserver;
 use App\Observers\InfakObserver;
 use App\Observers\CabangObserver;
 use App\Observers\CicilanObserver;
+use App\Observers\KPIPenilaianObserver;
 use App\Observers\PeriodeObserver;
 use App\Observers\PinjamanObserver;
 use App\Observers\PenilaianObserver;
@@ -44,6 +46,7 @@ class EventServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Penilaian::observe(PenilaianObserver::class);
         //Periode::observe(PeriodeObserver::class);
+        KPIPenilaian::observe(KPIPenilaianObserver::class);
     }
 
     /**

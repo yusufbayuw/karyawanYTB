@@ -33,8 +33,9 @@ class KPIKontrakResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('kpi_flow_id')
-                    ->numeric(),
+                Forms\Components\Select::make('kpi_flow_id')
+                    ->label('Flow')
+                    ->relationship('flow', 'nama'),
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
@@ -53,8 +54,7 @@ class KPIKontrakResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('kpi_flow_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('flow.nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),

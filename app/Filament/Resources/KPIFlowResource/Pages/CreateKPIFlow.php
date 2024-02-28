@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateKPIFlow extends CreateRecord
 {
     protected static string $resource = KPIFlowResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

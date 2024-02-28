@@ -228,7 +228,7 @@ class PenilaianResource extends Resource
                             ->options(fn (Get $get) => Cache::remember('kategories_name_id', 30*60, function () {
                                 return KategoriPenilaian::all()->pluck('nama', 'id');
                             }))
-                            ->disabled(fn () => explode(' - ', auth()->user()->golongan->nama)[0] !== 'Pranata Komputer')
+                            ->disabled(fn () => explode(' - ', auth()->user()->golongan->nama)[0] !== 'Pranata Komputer' || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat']))
                             ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id)
                             ->live(),
                     ])

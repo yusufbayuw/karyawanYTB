@@ -10,6 +10,10 @@ class KPIFlow extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'urutan' => 'json',
+    ];
+
     public function kontrak(): HasMany
     {
         return $this->hasMany(KPIKontrak::class, 'kpi_flow_id', 'id');
