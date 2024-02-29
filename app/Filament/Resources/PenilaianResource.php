@@ -18,6 +18,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
 use Illuminate\Support\Facades\Cache;
 use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\PenilaianResource\Pages;
@@ -147,7 +148,7 @@ class PenilaianResource extends Resource
                     ->sortable()
                     ->label('Hasil Kerja')
                     ->wrap()
-                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . str_replace('.',',',$penilaian->parameter->angka_kredit)),
+                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . str_replace('.', ',', $penilaian->parameter->angka_kredit)),
                 Tables\Columns\TextColumn::make('nilai')
                     ->label('Kuantitas')
                     ->numeric()
@@ -180,14 +181,14 @@ class PenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah')
                     ->label('Nilai')
                     ->summarize(Sum::make()->label('')),
-                Tables\Columns\TextColumn::make('created_at')
+                /* Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true), */
             ])
             ->filters([
                 /* SelectFilter::make('pegawai')
@@ -195,42 +196,50 @@ class PenilaianResource extends Resource
                     ->default(fn () => auth()->user()->id), */
                 Filter::make('ppak')
                     ->form([
-                        Forms\Components\Select::make('periode_filter')
-                            ->label('Pilih Periode')
-                            ->options(fn () => Cache::remember('periodes_nama_id', 30*60, function () {
-                                return Periode::all()->pluck('nama', 'id');
-                            }))
-                            ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
-                            ->disabled(!auth()->user()->hasRole(['super_admin']))
-                            ->live(),
-                        Forms\Components\Select::make('unit_filter')
-                            ->label('Pilih Unit')
-                            ->options(fn () => Cache::remember('units_nama_id', 30*60, function () {
-                                return Unit::all()->pluck('nama', 'id');
-                            }))
-                            ->default(fn () => auth()->user()->unit_id)
-                            ->live()
-                            ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
-                        Forms\Components\Select::make('pegawai_filter')
-                            ->label('Pilih Karyawan')
-                            ->options(function (Get $get) {
-                                $users_all = Cache::remember('users_all', 30*60, function () {
-                                    return User::all();
-                                });
-                                
-                                return $users_all->where('unit_id', $get('unit_filter'))->pluck('name', 'id');
-                            }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
-                            ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
-                            ->default(auth()->user()->id)
-                            ->live(),
-                        Forms\Components\Select::make('kategori_filter')
-                            ->label('Pilih Kategori')
-                            ->options(fn (Get $get) => Cache::remember('kategories_name_id', 30*60, function () {
-                                return KategoriPenilaian::all()->pluck('nama', 'id');
-                            }))
-                            ->disabled(fn () => explode(' - ', auth()->user()->golongan->nama)[0] !== 'Pranata Komputer' || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat']))
-                            ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id)
-                            ->live(),
+                        Forms\Components\Grid::make()
+                            ->columns([
+                                'sm' => 2,
+                                'xl' => 4,
+                                '2xl' => 4,
+                            ])->schema([
+                                Forms\Components\Select::make('periode_filter')
+                                    ->label('Pilih Periode')
+                                    ->options(fn () => Cache::remember('periodes_nama_id', 30 * 60, function () {
+                                        return Periode::all()->pluck('nama', 'id');
+                                    }))
+                                    ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
+                                    ->disabled(!auth()->user()->hasRole(['super_admin']))
+                                    ->live(),
+                                Forms\Components\Select::make('unit_filter')
+                                    ->label('Pilih Unit')
+                                    ->options(fn () => Cache::remember('units_nama_id', 30 * 60, function () {
+                                        return Unit::all()->pluck('nama', 'id');
+                                    }))
+                                    ->default(fn () => auth()->user()->unit_id)
+                                    ->live()
+                                    ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
+                                Forms\Components\Select::make('pegawai_filter')
+                                    ->label('Pilih Karyawan')
+                                    ->options(function (Get $get) {
+                                        $users_all = Cache::remember('users_all', 30 * 60, function () {
+                                            return User::all();
+                                        });
+
+                                        return $users_all->where('unit_id', $get('unit_filter'))->pluck('name', 'id');
+                                    }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
+                                    ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
+                                    ->default(auth()->user()->id)
+                                    ->live(),
+                                Forms\Components\Select::make('kategori_filter')
+                                    ->label('Pilih Kategori')
+                                    ->options(fn (Get $get) => Cache::remember('kategories_name_id', 30 * 60, function () {
+                                        return KategoriPenilaian::all()->pluck('nama', 'id');
+                                    }))
+                                    ->disabled(fn () => explode(' - ', auth()->user()->golongan->nama)[0] !== 'Pranata Komputer' || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat']))
+                                    ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id)
+                                    ->live(),
+                            ])->columnSpanFull(),
+
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->where('periode_id', $data['periode_filter'])->where('user_id', $data['pegawai_filter'])->where('kategori_id', $data['kategori_filter']);
@@ -241,12 +250,12 @@ class PenilaianResource extends Resource
                             $indicators[] = Indicator::make('Data tidak ditemukan')->removable(false);
                         } else {
                             $pegawai = User::find($data['pegawai_filter']);
-                            $indicators[] = Indicator::make(Unit::find($data['unit_filter'])->nama . ': ' . $pegawai->name . ' - ' . $pegawai->golongan->nama . ' ' . $pegawai->tingkat->title )->removable(false);
+                            $indicators[] = Indicator::make(Unit::find($data['unit_filter'])->nama . ': ' . $pegawai->name . ' - ' . $pegawai->golongan->nama . ' ' . $pegawai->tingkat->title)->removable(false);
                         }
 
                         return $indicators;
                     }),
-            ])
+            ], layout: FiltersLayout::AboveContent)->filtersFormColumns(1)
             ->persistFiltersInSession(true)
             ->deferFilters()
             ->groups([
