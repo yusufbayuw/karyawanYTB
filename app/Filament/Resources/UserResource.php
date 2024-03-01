@@ -11,8 +11,12 @@ use Filament\Tables\Table;
 use App\Models\TingkatJabatan;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use App\Filament\Exports\UserExporter;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\ExportBulkAction;
 use App\Filament\Resources\UserResource\Pages;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 
@@ -109,6 +113,11 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportAction::make()
+                    ->exporter(UserExporter::class)
+                    ->formats([
+                        ExportFormat::Xlsx,
+                    ]),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

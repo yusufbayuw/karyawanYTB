@@ -5,9 +5,12 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Actions;
 use App\Imports\UpdateUserImport;
+use Filament\Actions\ExportAction;
+use App\Filament\Exports\UserExporter;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
 use EightyNine\ExcelImport\ExcelImportAction;
+use Filament\Actions\Exports\Enums\ExportFormat;
 
 class ListUsers extends ListRecords
 {
@@ -17,6 +20,12 @@ class ListUsers extends ListRecords
     {
         $userAuthSpAd = auth()->user()->hasRole('super_admin');
         return [
+            ExportAction::make()
+                    ->exporter(UserExporter::class)
+                    ->formats([
+                        ExportFormat::Xlsx,
+                    ])
+                    ->fileName(fn (): string => "pegawai-". time() .".xlsx"),
             Actions\Action::make('Basic Role')
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')
