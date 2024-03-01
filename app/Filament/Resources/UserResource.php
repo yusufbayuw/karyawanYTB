@@ -12,7 +12,6 @@ use App\Models\TingkatJabatan;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
 use App\Filament\Exports\UserExporter;
-use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\ExportBulkAction;
 use App\Filament\Resources\UserResource\Pages;
@@ -113,11 +112,12 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    ExportAction::make()
-                    ->exporter(UserExporter::class)
-                    ->formats([
-                        ExportFormat::Xlsx,
-                    ]),
+                    ExportBulkAction::make()
+                        ->exporter(UserExporter::class)
+                        ->formats([
+                            ExportFormat::Xlsx,
+                        ])
+                        ->fileName(fn (): string => "pegawai-". time() .".xlsx"),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
