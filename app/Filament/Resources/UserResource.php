@@ -54,7 +54,7 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\TextInput::make('username')
-                    ->label('NIP')
+                    ->label('Nomor Induk Pegawai')
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at'),
@@ -62,7 +62,8 @@ class UserResource extends Resource
                     ->password()
                     ->dehydrateStateUsing(static fn (null|string $state): null|string => filled($state) ? Hash::make($state) : null,)
                     ->dehydrated(static fn (null|string $state): bool => filled($state))
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Kata Sandi'),
                 Forms\Components\CheckboxList::make('roles')
                     ->relationship('roles', 'name')
                     ->searchable(),
