@@ -92,6 +92,8 @@ class AdminPanelProvider extends PanelProvider
                     ->imageProvider(Triangles::make()),
                 SimpleLightBoxPlugin::make(),
             ])
-            ->unsavedChangesAlerts();
+            ->unsavedChangesAlerts()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s');
     }
 }
