@@ -21,9 +21,7 @@ class UpdateUserImport implements ToCollection
                     ['id' => $row[0],],
                     [
                         'name' => $row[1],
-                        'email' => $row[2],
-                        'username' => $row[3],
-                        'password' => $row[4]
+                        'jabatan_id' => $row[2],
                     ]
                 );
             }

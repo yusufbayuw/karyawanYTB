@@ -60,7 +60,6 @@ class UserResource extends Resource
                     ->label('Nomor Induk Pegawai')
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(static fn (null|string $state): null|string => filled($state) ? Hash::make($state) : null,)
@@ -112,7 +111,7 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    ExportBulkAction::make()
+                    ExportBulkAction::make('Export Pilihan')
                         ->exporter(UserExporter::class)
                         ->formats([
                             ExportFormat::Xlsx,

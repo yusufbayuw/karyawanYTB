@@ -20,7 +20,7 @@ class ListUsers extends ListRecords
     {
         $userAuthSpAd = auth()->user()->hasRole('super_admin');
         return [
-            ExportAction::make()
+            ExportAction::make('Export')
                     ->exporter(UserExporter::class)
                     ->formats([
                         ExportFormat::Xlsx,

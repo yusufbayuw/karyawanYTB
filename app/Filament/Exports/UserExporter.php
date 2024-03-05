@@ -23,10 +23,8 @@ class UserExporter extends Exporter
             ExportColumn::make('name'),
             ExportColumn::make('email'),
             ExportColumn::make('username'),
-            ExportColumn::make('email_verified_at'),
             ExportColumn::make('created_at'),
             ExportColumn::make('updated_at'),
-            ExportColumn::make('gruop_penilaian'),
         ];
     }
 
