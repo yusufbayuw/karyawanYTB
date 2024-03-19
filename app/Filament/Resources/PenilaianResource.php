@@ -216,6 +216,7 @@ class PenilaianResource extends Resource
                                         return Unit::all()->pluck('nama', 'id');
                                     }))
                                     ->default(fn () => auth()->user()->unit_id)
+                                    ->searchable()
                                     ->live()
                                     ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
                                 Forms\Components\Select::make('pegawai_filter')
@@ -229,6 +230,7 @@ class PenilaianResource extends Resource
                                     }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
                                     ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
                                     ->default(auth()->user()->id)
+                                    ->searchable()
                                     ->live(),
                                 Forms\Components\Select::make('kategori_filter')
                                     ->label('Pilih Kategori')
