@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Shield\RoleResource\Pages;
 
+use App\Filament\Resources\Shield\RoleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use EightyNine\ExcelImport\ExcelImportAction;
-use App\Filament\Resources\Shield\RoleResource;
 
 class ListRoles extends ListRecords
 {
@@ -14,11 +13,7 @@ class ListRoles extends ListRecords
     protected function getActions(): array
     {
         return [
-            ExcelImportAction::make()
-                ->color("primary")
-                ->hidden(!auth()->user()->hasRole('super_admin')),
             Actions\CreateAction::make(),
         ];
     }
-
 }
