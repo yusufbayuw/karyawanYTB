@@ -9,6 +9,7 @@ use Filament\PanelProvider;
 use App\Filament\Auth\Login;
 use App\Filament\Widgets\menuGrid;
 use Filament\Support\Colors\Color;
+use Filament\Navigation\NavigationGroup;
 use App\Filament\Widgets\CustomMenuWidget;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
@@ -22,8 +23,8 @@ use Swis\Filament\Backgrounds\ImageProviders\Triangles;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationGroup;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Edwink\FilamentUserActivity\FilamentUserActivityPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
@@ -85,12 +86,16 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->resources([
+                config('filament-logger.activity_resource')
+            ])
             ->plugins([
                 BreezyCore::make(),
                 FilamentShieldPlugin::make(),
                 FilamentBackgroundsPlugin::make()
                     ->imageProvider(Triangles::make()),
                 SimpleLightBoxPlugin::make(),
+                FilamentUserActivityPlugin::make(),
             ])
             ->unsavedChangesAlerts()
             ->databaseNotifications()
