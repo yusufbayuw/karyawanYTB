@@ -212,11 +212,18 @@ class PenilaianResource extends Resource
                                     ->live(),
                                 Forms\Components\Select::make('unit_filter')
                                     ->label('Pilih Unit')
+                                    ->columnSpan(1)
                                     ->options(fn () => Cache::remember('units_nama_id', 30 * 60, function () {
                                         return Unit::all()->pluck('nama', 'id');
                                     }))
                                     ->default(fn () => auth()->user()->unit_id)
                                     ->searchable()
+                                    ->afterStateUpdated(function (Set $set, $state) {
+                                        $users_all = Cache::remember('users_all', 30 * 60, function () {
+                                            return User::all();
+                                        });
+                                        $set('pegawai_filter', $users_all->where('unit_id', $state)->first()->id ?? null);
+                                    })
                                     ->live()
                                     ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
                                 Forms\Components\Select::make('pegawai_filter')
@@ -240,7 +247,7 @@ class PenilaianResource extends Resource
                                     ->disabled(fn () => !auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])) //!(explode(' - ', auth()->user()->golongan->nama)[0] == 'Pranata Komputer') ||
                                     ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id)
                                     ->live(),
-                            ])->columnSpanFull(),
+                            ]),
 
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -258,8 +265,8 @@ class PenilaianResource extends Resource
                         return $indicators;
                     }),
             ], layout: FiltersLayout::AboveContent)->filtersFormColumns(1)
-            ->persistFiltersInSession(true)
-            ->deferFilters()
+            //->persistFiltersInSession(true)
+            
             ->groups([
                 Group::make('user.name')
                     ->titlePrefixedWithLabel(false)
