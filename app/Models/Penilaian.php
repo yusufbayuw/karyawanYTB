@@ -15,7 +15,7 @@ class Penilaian extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
-    
+
     public function periode(): BelongsTo
     {
         return $this->belongsTo(Periode::class, 'periode_id', 'id');
@@ -29,5 +29,12 @@ class Penilaian extends Model
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(KategoriPenilaian::class, 'kategori_id', 'id');
+    }
+
+    protected function calculatedValue(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($nilai, $angka_kredit) => (float)$nilai * (float)$angka_kredit,
+        );
     }
 }

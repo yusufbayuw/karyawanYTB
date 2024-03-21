@@ -22,7 +22,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\PenilaianResource\Pages;
-
+use Filament\Support\Enums\FontWeight;
 
 class PenilaianResource extends Resource
 {
@@ -76,9 +76,12 @@ class PenilaianResource extends Resource
                         }
                     })
                     ->required()
+                    ->disabled(fn (Get $get) => $get('approval') ? true : false)
                     ->numeric(),
                 Forms\Components\FileUpload::make('file')
                     ->label('Unggah Berkas')
+                    ->hint('Hanya file .pdf')
+                    ->disabled(fn (Get $get) => $get('approval') ? true : false)
                     ->acceptedFileTypes(['application/pdf'])
                     ->required(),
                 Forms\Components\Toggle::make('approval')
@@ -87,11 +90,23 @@ class PenilaianResource extends Resource
                     ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
                         if ($state) {
                             $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
+                            $set('komentar', null);
                         } else {
                             $set('jumlah', null);
                         }
-                    }),
+                    })
+                    ->live(),
                 Forms\Components\Hidden::make('jumlah'),
+                Forms\Components\Textarea::make('komentar')
+                    ->hint('Berikan komentar jika ditolak')
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        if ($state) {
+                            $set('approval', false);
+                        }
+                    })
+                    ->label('Catatan')
+                    ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))
+                    ->live(onBlur:true),
             ]);
     }
 
@@ -107,6 +122,9 @@ class PenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('parameter_id')
                     ->sortable()
                     ->label('Parameter')
+                    ->tooltip(fn (Penilaian $penilaian) => $penilaian->komentar ?? null)
+                    ->color(fn (Penilaian $penilaian) => !$penilaian->file ? null : ($penilaian->komentar ? 'danger' : ($penilaian->approval ? 'success' : 'primary')) )
+                    ->weight(fn (Penilaian $penilaian) => $penilaian->file ? FontWeight::Bold : FontWeight::Light)
                     ->formatStateUsing(function (Penilaian $penilaian) {
                         // Convert JSON to an associative array
                         $data = json_decode($penilaian->parameter->ancestors, true);
@@ -169,7 +187,8 @@ class PenilaianResource extends Resource
 
                             if ($record->$name) {
                                 $penilaian->update([
-                                    'jumlah' => (float)$penilaian->nilai * (float)$penilaian->parameter->angka_kredit
+                                    'jumlah' => (float)$penilaian->nilai * (float)$penilaian->parameter->angka_kredit,
+                                    'komentar' => null
                                 ]);
                             } else {
                                 $penilaian->update([
