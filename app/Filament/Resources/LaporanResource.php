@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LaporanResource\Pages;
-use App\Filament\Resources\LaporanResource\RelationManagers;
-use App\Models\Laporan;
-use App\Models\Penilaian;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Laporan;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\LaporanResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\LaporanResource\RelationManagers;
+use Filament\Tables\Filters\SelectFilter;
 
 class LaporanResource extends Resource
 {
@@ -23,6 +24,8 @@ class LaporanResource extends Resource
     protected static ?string $navigationGroup = 'Angka Kredit';
 
     protected static ?int $navigationSort = 13;
+
+    protected static ?string $slug = 'angka-kredit-laporan';
 
     public static function form(Form $form): Form
     {
@@ -54,6 +57,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Pegawai')
+                    ->url(fn (Laporan $laporan) => "https://ppak.tarunabakti.or.id/angka-kredit-penilaian?tableFilters[ppak][periode_filter]=".$laporan->periode_id."&tableFilters[ppak][unit_filter]=".$laporan->user->unit->id."&tableFilters[ppak][pegawai_filter]=".$laporan->user->id."&tableFilters[ppak][kategori_filter]=1", true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.unit.nama')
                     ->label('Unit')
@@ -112,18 +116,27 @@ class LaporanResource extends Resource
                     ->badge(fn ($state) => $state > 0 ? true : false)
                     ->alignCenter()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                /* Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true), */
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('Unit')
+                    ->relationship('user.unit', 'nama')
+                    ->default(auth()->user()->unit->id)
+                    ->optionsLimit(function () {
+                        if (auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])) {
+                            return 50;
+                        } else {
+                            return 1;
+                        }
+                    })
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 //Tables\Actions\EditAction::make(),
             ])
