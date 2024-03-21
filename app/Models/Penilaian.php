@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+//use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Penilaian extends Model
 {
     use HasFactory;
+
+    //protected $appends = ['calculated_value']; // Ensure the attribute is appended to the model
 
     public function user(): BelongsTo
     {
@@ -31,10 +33,10 @@ class Penilaian extends Model
         return $this->belongsTo(KategoriPenilaian::class, 'kategori_id', 'id');
     }
 
-    protected function calculatedValue(): Attribute
+    /* public function calculatedValue(): Attribute
     {
-        return Attribute::make(
-            get: fn ($nilai, $angka_kredit) => (float)$nilai * (float)$angka_kredit,
+        return new Attribute(
+            get: fn () => dd($this->parameter) //(float)$this->nilai * ((float)$this->parameter->angka_kredit ?? 0),
         );
-    }
+    } */
 }

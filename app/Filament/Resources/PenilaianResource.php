@@ -75,15 +75,15 @@ class PenilaianResource extends Resource
                             $set('jumlah', null);
                         }
                     })
-                    ->required()
+                    //->required()
                     ->disabled(fn (Get $get) => $get('approval') ? true : false)
                     ->numeric(),
                 Forms\Components\FileUpload::make('file')
                     ->label('Unggah Berkas')
                     ->hint('Hanya file .pdf')
                     ->disabled(fn (Get $get) => $get('approval') ? true : false)
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->required(),
+                    ->acceptedFileTypes(['application/pdf']),
+                    //->required(),
                 Forms\Components\Toggle::make('approval')
                     ->label('Status Verifikasi')
                     ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))

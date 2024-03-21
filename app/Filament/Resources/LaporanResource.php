@@ -38,8 +38,7 @@ class LaporanResource extends Resource
                     ->default(null),
                 Forms\Components\TextInput::make('verified')
                     ->numeric()
-                    ->default(null), */
-            ]);
+                    ->default(null), */]);
     }
 
     public static function table(Table $table): Table
@@ -57,13 +56,57 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unverified')
                     ->numeric()
-                    ->default(fn (Laporan $laporan) => Penilaian::where('periode_id', $laporan->periode_id)->where('user_id', $laporan->user_id)->where('file', '!=', null)->where('komentar', null)->where('approval', false)->sum('calculated_value'))
+                    ->default(
+                        function (Laporan $laporan) {
+                            $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
+                                ->where('user_id', $laporan->user_id)
+                                ->whereNotNull('file')
+                                ->whereNull('komentar')
+                                ->where('approval', false)
+                                ->select('id', 'nilai')
+                                ->count();
+
+                            return $penilaians;
+                        }
+                    )
+                    ->badge(fn ($state) => $state > 0 ? true : false)
+                    ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('revision')
                     ->numeric()
+                    ->default(
+                        function (Laporan $laporan) {
+                            $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
+                                ->where('user_id', $laporan->user_id)
+                                ->whereNotNull('file')
+                                ->whereNotNull('komentar')
+                                ->where('approval', false)
+                                ->select('id', 'nilai')
+                                ->count();
+
+                            return $penilaians;
+                        }
+                    )
+                    ->badge(fn ($state) => $state > 0 ? true : false)
+                    ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('verified')
                     ->numeric()
+                    ->default(
+                        function (Laporan $laporan) {
+                            $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
+                                ->where('user_id', $laporan->user_id)
+                                ->whereNotNull('file')
+                                ->whereNull('komentar')
+                                ->where('approval', true)
+                                ->select('id', 'nilai')
+                                ->count();
+
+                            return $penilaians;
+                        }
+                    )
+                    ->badge(fn ($state) => $state > 0 ? true : false)
+                    ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
