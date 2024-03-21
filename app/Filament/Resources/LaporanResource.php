@@ -129,13 +129,6 @@ class LaporanResource extends Resource
                 SelectFilter::make('Unit')
                     ->relationship('user.unit', 'nama')
                     ->default(auth()->user()->unit->id)
-                    ->optionsLimit(function () {
-                        if (auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])) {
-                            return 50;
-                        } else {
-                            return 1;
-                        }
-                    })
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 //Tables\Actions\EditAction::make(),

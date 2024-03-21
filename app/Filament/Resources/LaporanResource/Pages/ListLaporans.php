@@ -21,6 +21,7 @@ class ListLaporans extends ListRecords
                     ProcessPenilaianJob::dispatch();
                 })
                 ->color('primary')
+                ->hidden(!auth()->user()->hasRole(['super_admin']))
         ];
     }
 }
