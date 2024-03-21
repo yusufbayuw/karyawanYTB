@@ -37,10 +37,32 @@ class ProcessPenilaianJob implements ShouldQueue
 
             if ($penilaianPeriode->isNotEmpty()) {
                 $userUnik = $penilaianPeriode->unique('user_id')->pluck('user_id');
-                
+
                 foreach ($userUnik as $key => $user) {
+                    $penilaian_filter = Penilaian::where('periode_id', $periode->id)
+                        ->where('user_id', $user);
+                    $unverified = $penilaian_filter
+                        ->whereNotNull('file')
+                        ->whereNull('komentar')
+                        ->where('approval', false)
+                        ->count();
+                    $revision = $penilaian_filter
+                        ->whereNotNull('file')
+                        ->whereNotNull('komentar')
+                        ->where('approval', false)
+                        ->count();
+                    $verified = $penilaian_filter
+                        ->whereNotNull('file')
+                        ->whereNull('komentar')
+                        ->where('approval', true)
+                        ->count();
                     Laporan::updateOrCreate(
-                        ['periode_id' => $periode->id, 'user_id' => $user]
+                        ['periode_id' => $periode->id, 'user_id' => $user],
+                        [
+                            'unverified' => $unverified,
+                            'revision' => $revision,
+                            'verified' => $verified,
+                        ]
                     );
                 }
             }

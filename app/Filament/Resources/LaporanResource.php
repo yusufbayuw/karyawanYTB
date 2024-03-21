@@ -20,6 +20,10 @@ class LaporanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
 
+    protected static ?string $navigationGroup = 'Angka Kredit';
+
+    protected static ?int $navigationSort = 13;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -56,7 +60,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unverified')
                     ->numeric()
-                    ->default(
+                    /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
                                 ->where('user_id', $laporan->user_id)
@@ -68,13 +72,13 @@ class LaporanResource extends Resource
 
                             return $penilaians;
                         }
-                    )
+                    ) */
                     ->badge(fn ($state) => $state > 0 ? true : false)
                     ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('revision')
                     ->numeric()
-                    ->default(
+                    /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
                                 ->where('user_id', $laporan->user_id)
@@ -86,13 +90,13 @@ class LaporanResource extends Resource
 
                             return $penilaians;
                         }
-                    )
+                    ) */
                     ->badge(fn ($state) => $state > 0 ? true : false)
                     ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('verified')
                     ->numeric()
-                    ->default(
+                    /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
                                 ->where('user_id', $laporan->user_id)
@@ -104,7 +108,7 @@ class LaporanResource extends Resource
 
                             return $penilaians;
                         }
-                    )
+                    ) */
                     ->badge(fn ($state) => $state > 0 ? true : false)
                     ->alignCenter()
                     ->sortable(),
