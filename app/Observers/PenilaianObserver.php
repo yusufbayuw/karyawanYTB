@@ -26,8 +26,8 @@ class PenilaianObserver //implements ShouldHandleEventsAfterCommit
         if ($penilaian->file || $penilaian->getOriginal('file')) {
             if ($penilaian->file != $penilaian->getOriginal('file')) {
                 if ($penilaian->getOriginal('file')) {
-                    dd(Storage::disk('public')->exists($penilaian->getOriginal('file')));
-                    Storage::disk('public')->delete($penilaian->getOriginal('file'));
+                    //Storage::disk('public')->delete($penilaian->getOriginal('file'));
+                    unlink(public_path('storage/'.$penilaian->getOriginal('file')));
                 }
             }
         }
