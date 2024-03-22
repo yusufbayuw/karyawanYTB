@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanBulananCabangController;
+use App\Http\Controllers\PenilaianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,3 +15,4 @@ use App\Http\Controllers\LaporanBulananCabangController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('angka-kredit-laporan/export/', [PenilaianController::class, 'export']);
