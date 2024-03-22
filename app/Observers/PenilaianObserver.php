@@ -66,7 +66,8 @@ class PenilaianObserver implements ShouldHandleEventsAfterCommit
     {
         if ($penilaian->file) {
             # code...
-            Storage::disk('public')->delete([$penilaian->file]);
+            //Storage::disk('public')->delete([$penilaian->file]);
+            unlink(public_path('storage/'.$penilaian->file));
         }
     }
 
