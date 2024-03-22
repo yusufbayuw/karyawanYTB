@@ -26,7 +26,12 @@ class PenilaianObserver implements ShouldHandleEventsAfterCommit
         if ($penilaian->file || $penilaian->getOriginal('file')) {
             if ($penilaian->file != $penilaian->getOriginal('file')) {
                 if ($penilaian->getOriginal('file')) {
-                    Storage::disk('public')->delete($penilaian->getOriginal('file'));
+                    try {
+                        Storage::disk('public')->delete($penilaian->getOriginal('file'));
+                    } catch (\Exception $e) {
+                        // Log or handle the exception
+                        dd("Error deleting file: " . $e->getMessage());
+                    }
                 }
             }
         }
