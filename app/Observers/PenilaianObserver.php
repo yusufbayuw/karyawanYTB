@@ -8,7 +8,7 @@ use App\Models\Penilaian;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class PenilaianObserver implements ShouldHandleEventsAfterCommit
+class PenilaianObserver //implements ShouldHandleEventsAfterCommit
 {
     /**
      * Handle the Penilaian "created" event.
