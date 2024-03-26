@@ -15,4 +15,7 @@ use App\Http\Controllers\PenilaianController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/laravel/login', function () {
+    return redirect('/login');
+})->middleware('auth')->name('login');
 Route::get('angka-kredit-laporan/export/', [PenilaianController::class, 'export']);

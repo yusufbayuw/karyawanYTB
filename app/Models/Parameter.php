@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use SolutionForest\FilamentTree\Concern\ModelTree;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use SolutionForest\FilamentTree\Concern\ModelTree;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Parameter extends Model
@@ -31,4 +32,5 @@ class Parameter extends Model
     {
         return $this->belongsTo(KategoriPenilaian::class, 'kategori_id', 'id');
     }
+
 }

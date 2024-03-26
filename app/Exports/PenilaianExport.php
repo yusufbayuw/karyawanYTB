@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Penilaian;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
 class PenilaianExport implements FromCollection
@@ -12,6 +13,21 @@ class PenilaianExport implements FromCollection
     */
     public function collection()
     {
-        return Penilaian::with('user')->with('periode')->with('parameter')->get();//all();
+        return DB::table('penilaians')
+                    ->join('users', 'penilaians.user_id', 'users.id')
+                    ->join('periodes', 'penilaians.periode_id', 'periodes.id')
+                    ->join('parameters', 'penilaians.parameter_id', 'parameters.id')
+                    ->join('units', 'users.unit_id', 'units.id')
+                    ->select( 
+                        'periodes.nama',
+                        'units.nama as unit',
+                        'users.name',
+                        'parameters.title',
+                        'parameters.angka_kredit',
+                        'penilaians.nilai',
+                        'parameters.hasil_kerja',
+                        'penilaians.jumlah'
+                    )
+                    ->get(); 
     }
 }
