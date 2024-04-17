@@ -38,7 +38,8 @@ class ManagePenilaians extends ManageRecords
                     $user->save();
                     //redirect($_SERVER['HTTP_REFERER']);
                 })
-                ->after(fn ($livewire) => $livewire->dispatch('update-record')),
+                ->after(fn () => redirect($_SERVER['HTTP_REFERER'])),
+                //->after(fn ($livewire) => $livewire->dispatch('update-record')),
             Actions\Action::make('Sync')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
