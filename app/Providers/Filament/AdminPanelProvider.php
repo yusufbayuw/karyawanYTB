@@ -97,7 +97,8 @@ class AdminPanelProvider extends PanelProvider
                 SimpleLightBoxPlugin::make(),
                 FilamentUserActivityPlugin::make(),
             ])
-            ->unsavedChangesAlerts()
+            //->unsavedChangesAlerts()
+            ->spa()
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s');
     }

@@ -50,8 +50,7 @@ class PenilaianResource extends Resource
         } else {
             return parent::getEloquentQuery()->where('user_id', $userAuth->id)->orWhereIn('user_id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null));
         }
-    } */
-
+    } */    
 
     public static function form(Form $form): Form
     {

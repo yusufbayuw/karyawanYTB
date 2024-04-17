@@ -71,7 +71,8 @@ class GolonganResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->recordAction(fn () => null)
+            ->recordUrl(fn () => null);
     }
 
     public static function getRelations(): array

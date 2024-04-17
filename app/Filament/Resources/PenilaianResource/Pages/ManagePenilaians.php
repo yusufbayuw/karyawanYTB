@@ -9,16 +9,22 @@ use App\Models\Periode;
 use App\Models\Golongan;
 use App\Models\Parameter;
 use App\Models\Penilaian;
+use Livewire\Attributes\On;
 use Filament\Resources\Pages\ManageRecords;
 use App\Filament\Resources\PenilaianResource;
-use App\Filament\Resources\PenilaianResource\Widgets\AbcIdentityWidget;
-use App\Filament\Resources\PenilaianResource\Widgets\AcuanPenilaianWidget;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Resources\Pages\ListRecords\Tab;
+use App\Filament\Resources\PenilaianResource\Widgets\AbcIdentityWidget;
+use App\Filament\Resources\PenilaianResource\Widgets\AcuanPenilaianWidget;
 
 class ManagePenilaians extends ManageRecords
 {
     protected static string $resource = PenilaianResource::class;
+
+    #[On('update-record')]
+    public function updateRecord()
+    {
+    }
 
     protected function getHeaderActions(): array
     {
@@ -30,8 +36,9 @@ class ManagePenilaians extends ManageRecords
                     $user = User::find(auth()->user()->id);
                     $user->gruop_penilaian = !$user->gruop_penilaian;
                     $user->save();
-                    redirect($_SERVER['HTTP_REFERER']);
-                }),
+                    //redirect($_SERVER['HTTP_REFERER']);
+                })
+                ->after(fn ($livewire) => $livewire->dispatch('update-record')),
             Actions\Action::make('Sync')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
