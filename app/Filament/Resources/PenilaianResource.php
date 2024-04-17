@@ -222,7 +222,7 @@ class PenilaianResource extends Resource
                             ])->schema([
                                 Forms\Components\Select::make('periode_filter')
                                     ->label('Pilih Periode')
-                                    ->options(fn () => Cache::remember('periodes_nama_id', 30 * 60, function () {
+                                    ->options(fn () => Cache::rememberForever('periodes_nama_id', function () {
                                         return Periode::all()->pluck('nama', 'id');
                                     }))
                                     ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
@@ -231,13 +231,13 @@ class PenilaianResource extends Resource
                                 Forms\Components\Select::make('unit_filter')
                                     ->label('Pilih Unit')
                                     ->columnSpan(1)
-                                    ->options(fn () => Cache::remember('units_nama_id', 30 * 60, function () {
+                                    ->options(fn () => Cache::rememberForever('units_nama_id', function () {
                                         return Unit::all()->pluck('nama', 'id');
                                     }))
                                     ->default(fn () => auth()->user()->unit_id)
                                     ->searchable()
                                     ->afterStateUpdated(function (Set $set, $state) {
-                                        $users_all = Cache::remember('users_all', 30 * 60, function () {
+                                        $users_all = Cache::rememberForever('users_all', function () {
                                             return User::all();
                                         });
                                         $set('pegawai_filter', $users_all->where('unit_id', $state)->first()->id ?? null);
@@ -247,7 +247,7 @@ class PenilaianResource extends Resource
                                 Forms\Components\Select::make('pegawai_filter')
                                     ->label('Pilih Karyawan')
                                     ->options(function (Get $get) {
-                                        $users_all = Cache::remember('users_all', 30 * 60, function () {
+                                        $users_all = Cache::rememberForever('users_all', function () {
                                             return User::all();
                                         });
 
@@ -259,7 +259,7 @@ class PenilaianResource extends Resource
                                     ->live(),
                                 Forms\Components\Select::make('kategori_filter')
                                     ->label('Pilih Kategori')
-                                    ->options(fn (Get $get) => Cache::remember('kategories_name_id', 30 * 60, function () {
+                                    ->options(fn (Get $get) => Cache::rememberForever('kategories_name_id', function () {
                                         return KategoriPenilaian::all()->pluck('nama', 'id');
                                     }))
                                     ->disabled(fn () => !auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])) //!(explode(' - ', auth()->user()->golongan->nama)[0] == 'Pranata Komputer') ||
