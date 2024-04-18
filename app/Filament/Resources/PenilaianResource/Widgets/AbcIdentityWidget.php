@@ -9,13 +9,14 @@ class AbcIdentityWidget extends Widget
 {
     protected static string $view = 'filament.resources.penilaian-resource.widgets.abc-identity-widget';
 
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
 
     public $firstReload = false;
 
     public function firstReloadOnce()
     {
         $this->firstReload = true;
+        sleep(3);
         redirect($_SERVER['HTTP_REFERER']);
     }
 
