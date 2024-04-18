@@ -7,7 +7,4 @@
             <h2>Total Angka Kredit Terverifikasi: {{ $total ?? null }}</h2>
         </div>
     </x-filament::section>
-    @if (!$firstReload)
-        <div wire:init="firstReloadOnce"></div>
-    @endif
 </x-filament-widgets::widget>
