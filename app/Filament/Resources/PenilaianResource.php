@@ -227,6 +227,7 @@ class PenilaianResource extends Resource
                                     }))
                                     ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
                                     ->disabled(!auth()->user()->hasRole(['super_admin']))
+                                    ->preload()
                                     ->live(),
                                 Forms\Components\Select::make('unit_filter')
                                     ->label('Pilih Unit')
@@ -242,6 +243,7 @@ class PenilaianResource extends Resource
                                         });
                                         $set('pegawai_filter', $users_all->where('unit_id', $state)->first()->id ?? null);
                                     })
+                                    ->preload()
                                     ->live()
                                     ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
                                 Forms\Components\Select::make('pegawai_filter')
@@ -253,6 +255,7 @@ class PenilaianResource extends Resource
 
                                         return $users_all->where('unit_id', $get('unit_filter'))->pluck('name', 'id');
                                     }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
+                                    ->preload()
                                     ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
                                     ->default(auth()->user()->id)
                                     ->searchable()
@@ -262,6 +265,7 @@ class PenilaianResource extends Resource
                                     ->options(fn (Get $get) => Cache::rememberForever('kategories_name_id', function () {
                                         return KategoriPenilaian::all()->pluck('nama', 'id');
                                     }))
+                                    ->preload()
                                     ->disabled(fn () => !auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])) //!(explode(' - ', auth()->user()->golongan->nama)[0] == 'Pranata Komputer') ||
                                     ->default(fn () => KategoriPenilaian::orderBy('id', 'asc')->first()->id)
                                     ->live(),
