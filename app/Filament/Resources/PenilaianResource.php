@@ -225,9 +225,9 @@ class PenilaianResource extends Resource
                                     ->options(fn () => Cache::rememberForever('periodes_nama_id', function () {
                                         return Periode::all()->pluck('nama', 'id');
                                     }))
+                                    ->preload()
                                     ->default(fn () => Periode::where('is_active', true)->first()->id ?? null)
                                     ->disabled(!auth()->user()->hasRole(['super_admin']))
-                                    ->preload()
                                     ->live(),
                                 Forms\Components\Select::make('unit_filter')
                                     ->label('Pilih Unit')
@@ -237,13 +237,13 @@ class PenilaianResource extends Resource
                                     }))
                                     ->default(fn () => auth()->user()->unit_id)
                                     ->searchable()
+                                    ->preload()
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         $users_all = Cache::rememberForever('users_all', function () {
                                             return User::all();
                                         });
                                         $set('pegawai_filter', $users_all->where('unit_id', $state)->first()->id ?? null);
                                     })
-                                    ->preload()
                                     ->live()
                                     ->disabled(!auth()->user()->hasRole(['super_admin', 'verifikator_pusat'])),
                                 Forms\Components\Select::make('pegawai_filter')
@@ -255,10 +255,10 @@ class PenilaianResource extends Resource
 
                                         return $users_all->where('unit_id', $get('unit_filter'))->pluck('name', 'id');
                                     }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
+                                    ->searchable()
                                     ->preload()
                                     ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
                                     ->default(auth()->user()->id)
-                                    ->searchable()
                                     ->live(),
                                 Forms\Components\Select::make('kategori_filter')
                                     ->label('Pilih Kategori')
