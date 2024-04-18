@@ -11,6 +11,14 @@ class AbcIdentityWidget extends Widget
 
     protected static bool $isLazy = false;
 
+    public $firstReload = false;
+
+    public function firstReloadOnce()
+    {
+        $this->firstReload = true;
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
     protected function getViewData(): array
     {
         $userAuth = auth()->user();

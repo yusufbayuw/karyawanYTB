@@ -6,14 +6,8 @@
             <h2>Golongan {{ $golongan ?? null }}</h2>
             <h2>Total Angka Kredit Terverifikasi: {{ $total ?? null }}</h2>
         </div>
-        <script>
-window.onload = function() {
-    if (!window.location.hash) {
-        window.location = window.location + '#loaded';
-        window.location.reload();
-    }
-};
-
-        </script>
     </x-filament::section>
+    @if (!$firstReload)
+        <div wire:init="firstReloadOnce"></div>
+    @endif
 </x-filament-widgets::widget>
