@@ -9,7 +9,7 @@ class AbcIdentityWidget extends Widget
 {
     protected static string $view = 'filament.resources.penilaian-resource.widgets.abc-identity-widget';
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public $firstReload = false;
 
