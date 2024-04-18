@@ -9,6 +9,8 @@ class AbcIdentityWidget extends Widget
 {
     protected static string $view = 'filament.resources.penilaian-resource.widgets.abc-identity-widget';
 
+    protected static bool $isLazy = false;
+
     protected function getViewData(): array
     {
         $userAuth = auth()->user();

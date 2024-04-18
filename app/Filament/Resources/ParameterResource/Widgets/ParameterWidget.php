@@ -15,6 +15,8 @@ class ParameterWidget extends BaseWidget
 {
     protected static string $model = Parameter::class;
 
+    protected static bool $isLazy = false;
+
     protected static int $maxDepth = 2;
 
     protected ?string $treeTitle = 'ParameterWidget';

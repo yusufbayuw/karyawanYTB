@@ -9,6 +9,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class AcuanPenilaianWidget extends BaseWidget
 {
+    protected static bool $isLazy = false;
     public function table(Table $table): Table
     {
         return $table

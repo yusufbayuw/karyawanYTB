@@ -14,6 +14,7 @@ use SolutionForest\FilamentTree\Widgets\Tree as BaseWidget;
 
 class JabatanWidget extends BaseWidget
 {
+    protected static bool $isLazy = false;
     protected static string $model = Jabatan::class;
 
     protected static int $maxDepth = 5;
