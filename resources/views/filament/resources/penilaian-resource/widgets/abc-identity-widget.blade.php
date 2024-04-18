@@ -7,16 +7,13 @@
             <h2>Total Angka Kredit Terverifikasi: {{ $total ?? null }}</h2>
         </div>
         <script>
-            (function() {
-    if (window.localStorage) {
-        if (!localStorage.getItem('firstLoad')) {
-            localStorage['firstLoad'] = true;
-            window.location.reload();
-        } else {
-            localStorage.removeItem('firstLoad');
-        }
+window.onload = function() {
+    if (!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
     }
-})();
+};
+
         </script>
     </x-filament::section>
 </x-filament-widgets::widget>
