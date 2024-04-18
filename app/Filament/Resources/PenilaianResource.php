@@ -235,9 +235,9 @@ class PenilaianResource extends Resource
                                     ->options(fn () => Cache::rememberForever('units_nama_id', function () {
                                         return Unit::all()->pluck('nama', 'id');
                                     }))
-                                    ->default(fn () => auth()->user()->unit_id)
                                     ->searchable()
-                                    ->preload()
+                                    ->preload(auth()->user()->hasRole(['super_admin', 'verifikator_pusat']))
+                                    ->default(fn () => auth()->user()->unit_id)
                                     ->afterStateUpdated(function (Set $set, $state) {
                                         $users_all = Cache::rememberForever('users_all', function () {
                                             return User::all();
@@ -256,7 +256,7 @@ class PenilaianResource extends Resource
                                         return $users_all->where('unit_id', $get('unit_filter'))->pluck('name', 'id');
                                     }) //(fn (Get $get) => User::where('id', auth()->user()->id)->orWhereIn('id', (User::whereIn('jabatan_id', (auth()->user()->jabatan->children->pluck('id')->toArray() ?? null))->pluck('id')->toArray() ?? null))->where('unit_id', $get('unit_filter') ?? 0)->pluck('name', 'id'))
                                     ->searchable()
-                                    ->preload()
+                                    ->preload(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
                                     ->disabled(fn (Get $get) => ($get('pegawai_filter') == null) || !auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))
                                     ->default(auth()->user()->id)
                                     ->live(),
