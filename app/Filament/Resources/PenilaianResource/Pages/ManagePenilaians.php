@@ -30,8 +30,9 @@ class ManagePenilaians extends ManageRecords
     {
         return [
             Actions\Action::make('Rangkuman')
-                ->icon('heroicon-o-arrows-pointing-in')
-                ->color("warning")
+                ->icon(auth()->user()->gruop_penilaian ? 'heroicon-o-arrows-pointing-out' : 'heroicon-o-arrows-pointing-in')
+                ->label(auth()->user()->gruop_penilaian ? 'Detail' : 'Rangkuman')
+                ->color(auth()->user()->gruop_penilaian ? "warning" : 'success')
                 ->action(function () {
                     $user = User::find(auth()->user()->id);
                     $user->gruop_penilaian = !$user->gruop_penilaian;
