@@ -60,11 +60,15 @@ class LaporanResource extends Resource
                     ->label('Pegawai')
                     ->url(fn (Laporan $laporan) => "https://ppak.tarunabakti.or.id/angka-kredit-penilaian?tableFilters[ppak][periode_filter]=".$laporan->periode_id."&tableFilters[ppak][unit_filter]=".$laporan->user->unit->id."&tableFilters[ppak][pegawai_filter]=".$laporan->user->id."&tableFilters[ppak][kategori_filter]=1", true)
                     ->sortable()
-                    ->description(fn (Laporan $laporan) => "Total Angka Kredit: ".$laporan->user->penilaian->sum('jumlah')),
+                    ->description(fn (Laporan $laporan) => "Total Angka Kredit: ".$laporan->user->penilaian->sum('jumlah'))
+                    ->tooltip(fn (Laporan $laporan) => $laporan->user->golongan->nama." ".$laporan->user->tingkat->title),
                 Tables\Columns\TextColumn::make('user.unit.nama')
                     ->label('Unit')
-                    ->sortable()
-                    ,
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('user.golongan.file')
+                    ->simpleLightbox()
+                    ->label('Acuan')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('unverified')
                     ->numeric()
                     ->color("danger")
