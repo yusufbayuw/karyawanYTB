@@ -67,6 +67,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('user.golongan.file')
                     ->simpleLightbox()
+                    ->circular()
                     ->label('Acuan')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unverified')
