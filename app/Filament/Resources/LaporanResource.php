@@ -72,7 +72,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unverified')
                     ->numeric()
-                    ->color("danger")
+                    ->color(fn ($state) => ($state > 0) ? "danger" : false)
                     /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
@@ -91,7 +91,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('revision')
                     ->numeric()
-                    ->color('warning')
+                    ->color(fn ($state) => ($state > 0) ? 'warning' : false)
                     /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
