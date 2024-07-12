@@ -21,24 +21,23 @@ class PenilaianAfterCommitObserver implements ShouldHandleEventsAfterCommit
      */
     public function updated(Penilaian $penilaian): void
     {
-
         $penilaian_filter = Penilaian::where('periode_id', $penilaian->periode_id)
-            ->where('user_id', $penilaian->user_id);
-        $unverified = $penilaian_filter
+            ->where('user_id', $penilaian->user_id)
             ->whereNotNull('file')
-            ->whereNull('komentar')
-            ->where('approval', false)
-            ->count();
-        $revision = $penilaian_filter
-            ->whereNotNull('file')
-            ->whereNotNull('komentar')
-            ->where('approval', false)
-            ->count();
-        $verified = $penilaian_filter
-            ->whereNotNull('file')
-            //->whereNull('komentar')
-            ->where('approval', true)
-            ->count();
+            ->get();
+
+        $unverified = $penilaian_filter->filter(function ($item) {
+            return is_null($item->komentar) && $item->approval == false;
+        })->count();
+
+        $revision = $penilaian_filter->filter(function ($item) {
+            return !is_null($item->komentar) && $item->approval == false;
+        })->count();
+
+        $verified = $penilaian_filter->filter(function ($item) {
+            return $item->approval == true;
+        })->count();
+
         Laporan::updateOrCreate(
             ['periode_id' => $penilaian->periode_id, 'user_id' => $penilaian->user_id],
             [

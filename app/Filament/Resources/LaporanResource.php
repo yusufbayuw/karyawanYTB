@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\LaporanResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LaporanResource\RelationManagers;
+use App\Models\Periode;
 use Filament\Tables\Filters\SelectFilter;
 
 class LaporanResource extends Resource
@@ -52,18 +53,21 @@ class LaporanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('periode.nama')
+                /* Tables\Columns\TextColumn::make('periode.nama')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable(), */
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Pegawai')
                     ->url(fn (Laporan $laporan) => "https://ppak.tarunabakti.or.id/angka-kredit-penilaian?tableFilters[ppak][periode_filter]=".$laporan->periode_id."&tableFilters[ppak][unit_filter]=".$laporan->user->unit->id."&tableFilters[ppak][pegawai_filter]=".$laporan->user->id."&tableFilters[ppak][kategori_filter]=1", true)
-                    ->sortable(),
+                    ->sortable()
+                    ->description(fn (Laporan $laporan) => "Total Angka Kredit: ".$laporan->user->penilaian->sum('jumlah')),
                 Tables\Columns\TextColumn::make('user.unit.nama')
                     ->label('Unit')
-                    ->sortable(),
+                    ->sortable()
+                    ,
                 Tables\Columns\TextColumn::make('unverified')
                     ->numeric()
+                    ->color("danger")
                     /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
@@ -82,6 +86,7 @@ class LaporanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('revision')
                     ->numeric()
+                    ->color('warning')
                     /* ->default(
                         function (Laporan $laporan) {
                             $penilaians = Penilaian::where('periode_id', $laporan->periode_id)
@@ -126,6 +131,9 @@ class LaporanResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true), */
             ])
             ->filters([
+                SelectFilter::make('Periode')
+                    ->relationship('periode', 'nama')
+                    ->default(Periode::where('is_active', true)->first()->id),
                 SelectFilter::make('Unit')
                     ->relationship('user.unit', 'nama')
                     ->default(auth()->user()->unit->id)

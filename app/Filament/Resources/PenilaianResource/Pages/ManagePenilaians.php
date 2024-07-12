@@ -9,6 +9,7 @@ use App\Models\Periode;
 use App\Models\Golongan;
 use App\Models\Parameter;
 use App\Models\Penilaian;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Filament\Resources\Pages\ManageRecords;
 use App\Filament\Resources\PenilaianResource;
@@ -40,7 +41,7 @@ class ManagePenilaians extends ManageRecords
                     //redirect($_SERVER['HTTP_REFERER']);
                 })
                 ->after(fn () => redirect($_SERVER['HTTP_REFERER'])),
-                //->after(fn ($livewire) => $livewire->dispatch('update-record')),
+            //->after(fn ($livewire) => $livewire->dispatch('update-record')),
             Actions\Action::make('Sync')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
