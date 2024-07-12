@@ -53,7 +53,7 @@ class ProcessPenilaianJob implements ShouldQueue
                         ->count();
                     $verified = $penilaian_filter
                         ->whereNotNull('file')
-                        ->whereNull('komentar')
+                        //->whereNull('komentar')
                         ->where('approval', true)
                         ->count();
                     Laporan::updateOrCreate(
