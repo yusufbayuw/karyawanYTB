@@ -39,7 +39,17 @@ class FastModeResource extends Resource
 {
     protected static ?string $model = Penilaian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
+
+    protected static ?string $modelLabel = 'Penilaian';
+
+    protected static ?string $navigationGroup = 'Angka Kredit';
+
+    protected static ?int $navigationSort = 13;
+
+    protected static ?string $navigationLabel = 'Penilaian Cepat';
+
+    protected static ?string $slug = 'angka-kredit-penilaian-cepat';
 
     public static function form(Form $form): Form
     {
