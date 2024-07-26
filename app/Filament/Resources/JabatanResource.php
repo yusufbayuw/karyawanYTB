@@ -44,6 +44,8 @@ class JabatanResource extends Resource
                 Forms\Components\Select::make('parent_id')
                     ->relationship('parent', 'title')
                     ->label('Atasan')
+                    ->searchable()
+                    ->preload()
                     ->nullable(),
                     //->default(-1),
                 Forms\Components\TextInput::make('order')
