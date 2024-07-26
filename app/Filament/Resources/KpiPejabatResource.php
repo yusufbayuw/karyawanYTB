@@ -19,15 +19,15 @@ class KpiPejabatResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
 
-    protected static ?string $modelLabel = 'Jabatan';
+    protected static ?string $modelLabel = 'Tugas Tambahan';
 
     protected static ?string $navigationGroup = 'KPI';
 
     protected static ?int $navigationSort = 21;
 
-    protected static ?string $navigationLabel = 'Jabatan';
+    protected static ?string $navigationLabel = 'Tugas Tambahan';
 
-    protected static ?string $slug = 'kpi-jabatan';
+    protected static ?string $slug = 'kpi-tugas-tambahan';
 
     public static function form(Form $form): Form
     {
