@@ -34,10 +34,11 @@ use App\Filament\Resources\FastModeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\FastModeResource\RelationManagers;
 use App\Filament\Resources\FastModeResource\Pages\ManageFastModes;
+use App\Models\PenilaianCepat;
 
 class FastModeResource extends Resource
 {
-    protected static ?string $model = Penilaian::class;
+    protected static ?string $model = PenilaianCepat::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-forward';
 
@@ -65,8 +66,8 @@ class FastModeResource extends Resource
                     ->disabled(),
                 Forms\Components\TextInput::make('nilai')
                     ->label('Kuantitas')
-                    ->hint(fn (Penilaian $penilaian) => $penilaian->parameter->hasil_kerja)
-                    ->afterStateUpdated(function (Set $set, $state, Penilaian $record) {
+                    ->hint(fn (PenilaianCepat $penilaian) => $penilaian->parameter->hasil_kerja)
+                    ->afterStateUpdated(function (Set $set, $state, PenilaianCepat $record) {
                         if ($record->approval) {
                             $set('jumlah', (float)$state * (float)$record->parameter->angka_kredit);
                         } else {
@@ -85,7 +86,7 @@ class FastModeResource extends Resource
                 Forms\Components\Toggle::make('approval')
                     ->label('Status Verifikasi')
                     ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))
-                    ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
+                    ->afterStateUpdated(function ($state, PenilaianCepat $penilaian, Set $set) {
                         if ($state) {
                             $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
                             $set('komentar', null);
@@ -115,15 +116,15 @@ class FastModeResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Pegawai')
                     ->sortable()
-                    ->tooltip(fn (Penilaian $penilaian) => $penilaian->user->unit->nama . ' - ' . $penilaian->user->jabatan->title . ' - ' . $penilaian->user->golongan->nama)
+                    ->tooltip(fn (PenilaianCepat $penilaian) => $penilaian->user->unit->nama . ' - ' . $penilaian->user->jabatan->title . ' - ' . $penilaian->user->golongan->nama)
                     ->wrap(),
                 Tables\Columns\TextColumn::make('parameter_id')
                     ->sortable()
                     ->label('Parameter')
-                    ->tooltip(fn (Penilaian $penilaian) => $penilaian->komentar ?? null)
-                    ->color(fn (Penilaian $penilaian) => !$penilaian->file ? null : ($penilaian->komentar ? 'danger' : ($penilaian->approval ? 'success' : 'primary')) )
-                    ->weight(fn (Penilaian $penilaian) => $penilaian->file ? FontWeight::Bold : FontWeight::Light)
-                    ->formatStateUsing(function (Penilaian $penilaian) {
+                    ->tooltip(fn (PenilaianCepat $penilaian) => $penilaian->komentar ?? null)
+                    ->color(fn (PenilaianCepat $penilaian) => !$penilaian->file ? null : ($penilaian->komentar ? 'danger' : ($penilaian->approval ? 'success' : 'primary')) )
+                    ->weight(fn (PenilaianCepat $penilaian) => $penilaian->file ? FontWeight::Bold : FontWeight::Light)
+                    ->formatStateUsing(function (PenilaianCepat $penilaian) {
                         // Convert JSON to an associative array
                         $data = json_decode($penilaian->parameter->ancestors, true);
 
@@ -144,7 +145,7 @@ class FastModeResource extends Resource
                         // Output the result
                         return $resultString;
                     })
-                    ->description(function (Penilaian $penilaian) {
+                    ->description(function (PenilaianCepat $penilaian) {
                         // Convert JSON to an associative array
                         $data = json_decode($penilaian->parameter->ancestors, true);
 
@@ -164,7 +165,7 @@ class FastModeResource extends Resource
                     ->sortable()
                     ->label('Hasil Kerja')
                     ->wrap()
-                    ->description(fn (Penilaian $penilaian) => 'Angka Kredit: ' . str_replace('.', ',', (((float)$penilaian->parameter->angka_kredit < 1) ? rtrim(rtrim($penilaian->parameter->angka_kredit, '0'), '.') : (string)rtrim(rtrim(number_format((float)$penilaian->parameter->angka_kredit, 2, '.', ''), '0'), '.')))),
+                    ->description(fn (PenilaianCepat $penilaian) => 'Angka Kredit: ' . str_replace('.', ',', (((float)$penilaian->parameter->angka_kredit < 1) ? rtrim(rtrim($penilaian->parameter->angka_kredit, '0'), '.') : (string)rtrim(rtrim(number_format((float)$penilaian->parameter->angka_kredit, 2, '.', ''), '0'), '.')))),
                 Tables\Columns\TextColumn::make('nilai')
                     ->label('Kuantitas')
                     ->numeric()
@@ -176,7 +177,7 @@ class FastModeResource extends Resource
                     ->label('Verifikasi')
                     ->boolean()
                     ->sortable()
-                    ->action(function ($record, $column, Penilaian $penilaian) {
+                    ->action(function ($record, $column, PenilaianCepat $penilaian) {
                         $name = $column->getName();
                         if ($penilaian->file && $penilaian->nilai && ((auth()->user()->id === $penilaian->parameter->parent->id ?? false) || auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit']))) {
                             $record->update([
