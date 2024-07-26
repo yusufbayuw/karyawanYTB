@@ -36,7 +36,6 @@ class UnitResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('code')
-                    ->required()
                     ->maxLength(255),
             ]);
     }

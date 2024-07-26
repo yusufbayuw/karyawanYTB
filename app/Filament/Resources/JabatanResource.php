@@ -40,7 +40,6 @@ class JabatanResource extends Resource
                     ->maxLength(255)
                     ->label('Jabatan'),
                 Forms\Components\TextInput::make('code')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('parent_id')
                     ->relationship('parent', 'title')
