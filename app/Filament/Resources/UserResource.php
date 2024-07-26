@@ -85,6 +85,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('jabatan.title')
                     ->label('Jabatan')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('jabatan.code')
+                    ->label('JOB CODE')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('golongan.nama')
                     ->sortable()
                     ->formatStateUsing(fn (User $user) => $user->golongan->nama . ' - ' . $user->tingkat->title),
