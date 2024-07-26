@@ -64,7 +64,7 @@ class JabatanResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->label('Jabatan')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('code')
+                Tables\Columns\TextInputColumn::make('code')
                     ->label('Code')
                     ->sortable()
                     ->searchable(),
