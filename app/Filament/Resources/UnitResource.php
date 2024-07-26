@@ -49,6 +49,8 @@ class UnitResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

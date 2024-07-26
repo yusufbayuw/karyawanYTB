@@ -42,7 +42,7 @@ class FastModeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-forward';
 
-    protected static ?string $modelLabel = 'Penilaian';
+    protected static ?string $modelLabel = 'Penilaian Cepat';
 
     protected static ?string $navigationGroup = 'Angka Kredit';
 
