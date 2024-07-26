@@ -11,14 +11,47 @@ class KPIKontrak extends Model
 {
     use HasFactory;
 
-    public function flow(): BelongsTo
+    /* // Definisikan accessor untuk kpi_code
+    public function getCodeAttribute()
     {
-        return $this->belongsTo(KPIFlow::class, 'kpi_flow_id', 'id');
+        $unitName = $this->unit->code ?? '';
+        $jabatanName = $this->jabatan->code ?? '';
+        $order = $this->order ?? '';
+
+        return "$unitName-$jabatanName.$order";
+    }
+
+    public function getKpiCodeAttribute()
+    {
+        $code = $this->code ?? '';
+        $kpi = $this->kpi ?? '';
+
+        return "($code) $kpi";
+    } */
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
+    }
+
+    public function jabatan(): BelongsTo
+    {
+        return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
     }
 
     public function penilaian(): HasMany
     {
         return $this->hasMany(KPIPenilaian::class, 'kpi_kontrak_id', 'id');
+    }
+
+    public function periode(): BelongsTo
+    {
+        return $this->belongsTo(KPIPeriode::class, 'periode_kpi_id', 'id');
+    }
+
+    public function terusan(): BelongsTo
+    {
+        return $this->belongsTo(KPIKontrak::class, 'parent_id', 'id');
     }
 
 }

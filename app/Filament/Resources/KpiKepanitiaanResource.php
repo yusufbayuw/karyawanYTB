@@ -2,42 +2,43 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\KpiKepanitiaanResource\Pages;
+use App\Filament\Resources\KpiKepanitiaanResource\RelationManagers;
+use App\Models\KpiKepanitiaan;
 use Filament\Forms;
-use App\Models\Unit;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UnitResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UnitResource\RelationManagers;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
-class UnitResource extends Resource
+class KpiKepanitiaanResource extends Resource
 {
-    protected static ?string $model = Unit::class;
+    protected static ?string $model = KpiKepanitiaan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-chevron-double-up';
 
-    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $modelLabel = 'Poin Kepanitiaan';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?string $navigationLabel = 'Unit';
+    protected static ?int $navigationSort = 17;
 
-    protected static ?string $slug = 'unit';
+    protected static ?string $navigationLabel = 'Poin Kepanitiaan';
+
+    protected static ?string $slug = 'kpi-poin-kepanitiaan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
+                Forms\Components\TextInput::make('jenis')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->required()
+                Forms\Components\TextInput::make('penugasan')
                     ->maxLength(255),
+                Forms\Components\TextInput::make('poin')
+                    ->numeric(),
             ]);
     }
 
@@ -45,10 +46,13 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nama')
+                Tables\Columns\TextColumn::make('jenis')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('penugasan')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('poin')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -65,7 +69,6 @@ class UnitResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -82,9 +85,9 @@ class UnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUnits::route('/'),
-            'create' => Pages\CreateUnit::route('/create'),
-            'edit' => Pages\EditUnit::route('/{record}/edit'),
+            'index' => Pages\ListKpiKepanitiaans::route('/'),
+            'create' => Pages\CreateKpiKepanitiaan::route('/create'),
+            'edit' => Pages\EditKpiKepanitiaan::route('/{record}/edit'),
         ];
     }
 }

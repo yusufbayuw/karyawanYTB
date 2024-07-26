@@ -2,42 +2,45 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\KpiKejuaraanResource\Pages;
+use App\Filament\Resources\KpiKejuaraanResource\RelationManagers;
+use App\Models\KpiKejuaraan;
 use Filament\Forms;
-use App\Models\Unit;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UnitResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UnitResource\RelationManagers;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
-class UnitResource extends Resource
+class KpiKejuaraanResource extends Resource
 {
-    protected static ?string $model = Unit::class;
+    protected static ?string $model = KpiKejuaraan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $modelLabel = 'Poin Prestasi';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?string $navigationLabel = 'Unit';
+    protected static ?int $navigationSort = 16;
 
-    protected static ?string $slug = 'unit';
+    protected static ?string $navigationLabel = 'Poin Prestasi';
+
+    protected static ?string $slug = 'kpi-poin-prestasi';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
+                Forms\Components\TextInput::make('prestasi')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->required()
+                Forms\Components\TextInput::make('jabatan')
                     ->maxLength(255),
+                Forms\Components\TextInput::make('kategori')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('poin')
+                    ->numeric(),
             ]);
     }
 
@@ -45,10 +48,15 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nama')
+                Tables\Columns\TextColumn::make('prestasi')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('jabatan')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('kategori')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('poin')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -65,7 +73,6 @@ class UnitResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -82,9 +89,9 @@ class UnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUnits::route('/'),
-            'create' => Pages\CreateUnit::route('/create'),
-            'edit' => Pages\EditUnit::route('/{record}/edit'),
+            'index' => Pages\ListKpiKejuaraans::route('/'),
+            'create' => Pages\CreateKpiKejuaraan::route('/create'),
+            'edit' => Pages\EditKpiKejuaraan::route('/{record}/edit'),
         ];
     }
 }

@@ -10,15 +10,16 @@ class KPIPenilaian extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'rincian_kepanitiaan' => 'json',
+        'rincian_kejuaraan' => 'json',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
     
-    public function periode(): BelongsTo
-    {
-        return $this->belongsTo(KPIPeriode::class, 'kpi_periode_id', 'id');
-    }
 
     public function kontrak(): BelongsTo
     {

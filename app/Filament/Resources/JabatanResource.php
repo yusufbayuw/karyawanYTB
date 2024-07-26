@@ -39,9 +39,13 @@ class JabatanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Jabatan'),
+                Forms\Components\TextInput::make('code')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\Select::make('parent_id')
                     ->relationship('parent', 'title')
-                    ->label('Atasan'),
+                    ->label('Atasan')
+                    ->nullable(),
                     //->default(-1),
                 Forms\Components\TextInput::make('order')
                     ->required()
@@ -58,6 +62,10 @@ class JabatanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Jabatan')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Code')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label('Atasan')

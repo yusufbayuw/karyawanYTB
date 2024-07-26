@@ -39,7 +39,7 @@ class FastModeResource extends Resource
 {
     protected static ?string $model = Penilaian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calculator';
+    protected static ?string $navigationIcon = 'heroicon-o-forward';
 
     protected static ?string $modelLabel = 'Penilaian';
 
@@ -55,7 +55,56 @@ class FastModeResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Pegawai')
+                    ->disabled(),
+                Forms\Components\Select::make('parameter_id')
+                    ->relationship('parameter', 'title')
+                    ->label('Parameter')
+                    ->disabled(),
+                Forms\Components\TextInput::make('nilai')
+                    ->label('Kuantitas')
+                    ->hint(fn (Penilaian $penilaian) => $penilaian->parameter->hasil_kerja)
+                    ->afterStateUpdated(function (Set $set, $state, Penilaian $record) {
+                        if ($record->approval) {
+                            $set('jumlah', (float)$state * (float)$record->parameter->angka_kredit);
+                        } else {
+                            $set('jumlah', null);
+                        }
+                    })
+                    //->required()
+                    ->disabled(fn (Get $get) => $get('approval') ? true : false)
+                    ->numeric(),
+                Forms\Components\FileUpload::make('file')
+                    ->label('Unggah Berkas')
+                    ->hint('Hanya file .pdf')
+                    ->disabled(fn (Get $get) => $get('approval') ? true : false)
+                    ->acceptedFileTypes(['application/pdf']),
+                    //->required(),
+                Forms\Components\Toggle::make('approval')
+                    ->label('Status Verifikasi')
+                    ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))
+                    ->afterStateUpdated(function ($state, Penilaian $penilaian, Set $set) {
+                        if ($state) {
+                            $set('jumlah', ($penilaian->parameter->angka_kredit ?? 0) * ($penilaian->nilai ?? 0));
+                            $set('komentar', null);
+                        } else {
+                            $set('jumlah', null);
+                        }
+                    })
+                    ->live(),
+                Forms\Components\Hidden::make('jumlah'),
+                Forms\Components\Textarea::make('komentar')
+                    ->hint('Berikan komentar jika ditolak')
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        if ($state) {
+                            $set('approval', false);
+                        }
+                    })
+                    ->label('Catatan')
+                    ->disabled(fn () => !(auth()->user()->hasRole(['super_admin', 'verifikator_pusat', 'verifikator_unit'])))
+                    ->live(onBlur:true),
             ]);
     }
 

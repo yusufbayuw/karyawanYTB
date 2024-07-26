@@ -2,23 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\KPIPenilaian;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KPIPenilaianResource\Pages;
 use App\Filament\Resources\KPIPenilaianResource\RelationManagers;
+use App\Models\KpiKejuaraan;
+use App\Models\KpiKepanitiaan;
+use App\Models\KPIKontrak;
+use App\Models\KPIPenilaian;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class KPIPenilaianResource extends Resource
 {
     protected static ?string $model = KPIPenilaian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
     protected static ?string $modelLabel = 'Penilaian';
 
@@ -35,18 +37,51 @@ class KPIPenilaianResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name'),
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Select::make('kpi_kontrak_id')
-                    ->relationship('kontrak', 'nama')
-                    ->searchable(),
-                Forms\Components\Select::make('kpi_periode_id')
-                    ->relationship('periode', 'nama'),
+                    ->options(KPIKontrak::all()->pluck('kpi_code', 'id'))
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\TextInput::make('target')
+                    ->numeric(),
                 Forms\Components\TextInput::make('realisasi')
-                    ->numeric()
-                    ,
-                Forms\Components\TextInput::make('total_realisasi')
-                    ->numeric()
-                    ,
+                    ->numeric(),
+                Forms\Components\TextInput::make('total')
+                    ->numeric(),
+                //Forms\Components\TextInput::make('total_realisasi')
+                //    ->numeric(),
+                Forms\Components\Repeater::make('rincian_kepanitiaan')
+                    ->label('Rincian Kepanitiaan')
+                    ->schema([
+                        Forms\Components\Hidden::make('user_id')
+                            ->default(fn (KPIPenilaian $kPIPenilaian) => $kPIPenilaian->user_id),
+                        Forms\Components\TextInput::make('nama')
+                            ->label('Nama Kegiatan'),
+                        Forms\Components\Select::make('kpi_kepanitiaan_id')
+                            ->label('Posisi')
+                            ->options(KpiKepanitiaan::all()->pluck('link', 'id'))
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columnSpanFull()
+                    ->hidden(fn (KPIPenilaian $kPIPenilaian) => !$kPIPenilaian->kontrak->is_kepanitiaan),
+                Forms\Components\Repeater::make('rincian_prestasi')
+                    ->label('Rincian Prestasi Siswa')
+                    ->schema([
+                        Forms\Components\Hidden::make('user_id')
+                            ->default(fn (KPIPenilaian $kPIPenilaian) => $kPIPenilaian->user_id),
+                        Forms\Components\TextInput::make('nama')
+                            ->label('Ajang'),
+                        Forms\Components\Select::make('kpi_kejuaraan_id')
+                            ->label('Kualifikasi')
+                            ->options(KpiKejuaraan::all()->pluck('link', 'id'))
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columnSpanFull()
+                    ->hidden(fn (KPIPenilaian $kPIPenilaian) => !$kPIPenilaian->kontrak->is_kejuaraan),
             ]);
     }
 
@@ -57,16 +92,20 @@ class KPIPenilaianResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kontrak.nama')
+                Tables\Columns\TextColumn::make('kontrak.kpi_code')
+                    ->searchable()
+                    ->wrap()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('periode.nama')
+                Tables\Columns\TextInputColumn::make('target')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('realisasi')
+                Tables\Columns\TextInputColumn::make('realisasi')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('total_realisasi')
+                /* Tables\Columns\TextColumn::make('total_realisasi')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable(), */
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

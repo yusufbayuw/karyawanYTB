@@ -2,42 +2,41 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\KpiPejabatResource\Pages;
+use App\Filament\Resources\KpiPejabatResource\RelationManagers;
+use App\Models\KpiPejabat;
 use Filament\Forms;
-use App\Models\Unit;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UnitResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UnitResource\RelationManagers;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
-class UnitResource extends Resource
+class KpiPejabatResource extends Resource
 {
-    protected static ?string $model = Unit::class;
+    protected static ?string $model = KpiPejabat::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
 
-    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $modelLabel = 'Jabatan';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?string $navigationLabel = 'Unit';
+    protected static ?int $navigationSort = 21;
 
-    protected static ?string $slug = 'unit';
+    protected static ?string $navigationLabel = 'Jabatan';
+
+    protected static ?string $slug = 'kpi-jabatan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('user_id')
+                    ->numeric(),
+                Forms\Components\TextInput::make('kpi_jabatan_id')
+                    ->numeric(),
             ]);
     }
 
@@ -45,10 +44,12 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nama')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('kpi_jabatan_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -65,7 +66,6 @@ class UnitResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -82,9 +82,9 @@ class UnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUnits::route('/'),
-            'create' => Pages\CreateUnit::route('/create'),
-            'edit' => Pages\EditUnit::route('/{record}/edit'),
+            'index' => Pages\ListKpiPejabats::route('/'),
+            'create' => Pages\CreateKpiPejabat::route('/create'),
+            'edit' => Pages\EditKpiPejabat::route('/{record}/edit'),
         ];
     }
 }
