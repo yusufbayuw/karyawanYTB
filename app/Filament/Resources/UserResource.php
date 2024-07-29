@@ -39,8 +39,8 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('unit_id')
-                    ->relationship('unit', 'nama'),
+                Forms\Components\Select::make('unit_kpi_id')
+                    ->relationship('unit_kpi', 'nama'),
                 Forms\Components\Select::make('golongan_id')
                     ->relationship('golongan', 'nama')
                     ->live(),

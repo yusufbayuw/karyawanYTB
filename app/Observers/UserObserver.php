@@ -11,7 +11,10 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        //
+        if ($user->unit_kpi_id) {
+            $user->unit_id = $user->unit_kpi->unit->id;
+            $user->saveQuietly();
+        }
     }
 
     /**
@@ -19,7 +22,10 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        //
+        if ($user->unit_kpi_id) {
+            $user->unit_id = $user->unit_kpi->unit->id;
+            $user->saveQuietly();
+        }
     }
 
     /**

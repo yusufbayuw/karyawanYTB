@@ -46,6 +46,9 @@ class UnitKpiResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('unit.nama')
                     ->label('Unit')
                     ->sortable(),

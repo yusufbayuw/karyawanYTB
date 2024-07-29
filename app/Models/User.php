@@ -67,6 +67,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 
+    public function unit_kpi(): BelongsTo
+    {
+        return $this->belongsTo(UnitKpi::class, 'unit_kpi_id', 'id');
+    }
+
     public function golongan(): BelongsTo
     {
         return $this->belongsTo(Golongan::class, 'golongan_id', 'id');
