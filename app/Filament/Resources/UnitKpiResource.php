@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KpiKejuaraanResource\Pages;
-use App\Filament\Resources\KpiKejuaraanResource\RelationManagers;
-use App\Models\KpiKejuaraan;
+use App\Filament\Resources\UnitKpiResource\Pages;
+use App\Filament\Resources\UnitKpiResource\RelationManagers;
+use App\Models\UnitKpi;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,34 +13,32 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KpiKejuaraanResource extends Resource
+class UnitKpiResource extends Resource
 {
-    protected static ?string $model = KpiKejuaraan::class;
+    protected static ?string $model = UnitKpi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $modelLabel = 'Poin Prestasi';
+    protected static ?string $modelLabel = 'Penilaian';
 
     protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?int $navigationSort = 16;
+    protected static ?int $navigationSort = 15;
 
-    protected static ?string $navigationLabel = 'Poin Prestasi';
+    protected static ?string $navigationLabel = 'Penilaian';
 
-    protected static ?string $slug = 'kpi-poin-prestasi';
+    protected static ?string $slug = 'kpi-penilaian';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('prestasi')
+                Forms\Components\Select::make('unit_id')
+                    ->relationship('unit', 'nama'),
+                Forms\Components\TextInput::make('nama')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('jabatan')
+                Forms\Components\TextInput::make('kode')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kategori')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('poin')
-                    ->numeric(),
             ]);
     }
 
@@ -48,15 +46,13 @@ class KpiKejuaraanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('prestasi')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('jabatan')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('kategori')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('poin')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('unit.nama')
+                    ->label('Unit')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('nama')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('kode')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -71,6 +67,7 @@ class KpiKejuaraanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -79,19 +76,10 @@ class KpiKejuaraanResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKpiKejuaraans::route('/'),
-            'create' => Pages\CreateKpiKejuaraan::route('/create'),
-            'edit' => Pages\EditKpiKejuaraan::route('/{record}/edit'),
+            'index' => Pages\ManageUnitKpis::route('/'),
         ];
     }
 }
