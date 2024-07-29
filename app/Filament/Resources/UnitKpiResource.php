@@ -19,15 +19,15 @@ class UnitKpiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $modelLabel = 'Penilaian';
+    protected static ?string $modelLabel = 'Unit';
 
     protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 12;
 
-    protected static ?string $navigationLabel = 'Penilaian';
+    protected static ?string $navigationLabel = 'Unit';
 
-    protected static ?string $slug = 'kpi-penilaian';
+    protected static ?string $slug = 'kpi-unit';
 
     public static function form(Form $form): Form
     {
