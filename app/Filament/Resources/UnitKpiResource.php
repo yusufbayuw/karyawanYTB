@@ -37,7 +37,7 @@ class UnitKpiResource extends Resource
                     ->relationship('unit', 'nama'),
                 Forms\Components\TextInput::make('nama')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kode')
+                Forms\Components\TextInput::make('code')
                     ->maxLength(255),
             ]);
     }
@@ -51,7 +51,7 @@ class UnitKpiResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kode')
+                Tables\Columns\TextColumn::make('code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
