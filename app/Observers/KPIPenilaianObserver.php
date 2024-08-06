@@ -2,8 +2,9 @@
 
 namespace App\Observers;
 
-use App\Models\KPIPenilaian;
 use App\Models\User;
+use App\Models\KPIPenilaian;
+use Illuminate\Support\Facades\DB;
 
 class KPIPenilaianObserver
 {
@@ -20,35 +21,60 @@ class KPIPenilaianObserver
      */
     public function updated(KPIPenilaian $kPIPenilaian): void
     {
-        $periode_id = $kPIPenilaian->periode->id;
         $kontrak = $kPIPenilaian->kontrak;
-        $flow = $kontrak->flow;
-        $kontrak_id = $kontrak->id;
+        if ($kontrak->is_komponen_pengurang) { // case pengurang total
+            if ($kontrak->kpi === "Persentase kepatuhan organisasi terhadap hukum dan peraturan perundangan yang berlaku") {
+                $sumAll = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
+                    ->where('user_id', $kPIPenilaian->user_id)
+                    ->whereHas('kontrak', function ($query) {
+                        $query->where('is_komponen_pengurang', false);
+                    })->sum('total_realisasi');
 
-        $urutan = $flow->urutan;
+                $kPIPenilaian->total_realisasi = (-1) * ((100 - $kPIPenilaian->realisasi) / 100) * $sumAll / 2;
+                $kPIPenilaian->saveQuietly();
+            } elseif ($kontrak->kpi = "Persentase keluhan terhadap layanan yang diberikan") {
+                $sumAll = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
+                    ->where('user_id', $kPIPenilaian->user_id)
+                    ->whereHas('kontrak', function ($query) {
+                        $query->where('is_komponen_pengurang', false);
+                    })->sum('total_realisasi');
 
-        $jabatan = $kPIPenilaian->user->jabatan_id;
-
-        foreach ($urutan as $key => $jabatan) {
-            if ($key === 0) {
-                //
-
+                $kPIPenilaian->total_realisasi = (-1) * ($kPIPenilaian->realisasi / 100) * $sumAll / 2;
+                $kPIPenilaian->saveQuietly();
+            }
+        } else {
+            if ($kontrak->is_kepanitiaan) { // case kepanitiaan
+                # code...
+            } elseif ($kontrak->is_kejuaraan) { // case kejuaraan
+                # code...
+            } elseif ($kontrak->is_cabang_pengurang) { // case cabang pengurang
+                $poin_induk = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
+                                ->where('user_id', $kPIPenilaian->user_id)
+                                ->whereHas('kontrak', function ($query) use ($kPIPenilaian) {
+                                    $query->where('code', substr($kPIPenilaian->kontrak->code, 0, -1));
+                                })->first();
+                if ($poin_induk->total_realisasi) {
+                    $kPIPenilaian->total_realisasi = ($poin_induk->total_realisasi * $kPIPenilaian->realisasi / 100) - $poin_induk->total_realisasi;
+                    $kPIPenilaian->saveQuietly();
+                }
             } else {
-                $jabatan_base_0 = $urutan[$key - 1]["jabatan"];
-                $jabatan_base = $jabatan["jabatan"];
-                $users_id = User::where('jabatan_id', $jabatan_base_0)->get('id')->toArray();
-                $users_id = array_map(function ($item) {
-                    return $item['id'];
-                }, $users_id);
-
-                $penilaian_avg = KPIPenilaian::where('kpi_kontrak_id', $kontrak_id)->whereIn('user_id', $users_id)->avg('realisasi');
-
-                $user = User::where('jabatan_id', $jabatan_base)->first()->id;
-
-                $id_penilaian = KPIPenilaian::where('kpi_periode_id', $periode_id)->where('user_id', $user)->where('kpi_kontrak_id', $kontrak_id)->first()->id;
-                $penilaian_last = KPIPenilaian::find($id_penilaian);
-                $penilaian_last->realisasi  = $penilaian_avg;
-                $penilaian_last->saveQuietly();
+                if ($kontrak->currency === '%') {
+                    $kPIPenilaian->total_realisasi = $kPIPenilaian->total > 0 ? (float)$kPIPenilaian->realisasi / (float)$kPIPenilaian->target * (float)$kontrak->poin : 0;
+                    $kPIPenilaian->saveQuietly();
+                } else {
+                    $kPIPenilaian->total_realisasi = $kPIPenilaian->total > 0 ? (float)$kPIPenilaian->realisasi * (float)$kontrak->poin : 0;
+                    $kPIPenilaian->saveQuietly();
+                }
+            }
+            $pengurangs = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
+                ->where('user_id', $kPIPenilaian->user_id)
+                ->whereHas('kontrak', function ($query) {
+                    $query->where('is_komponen_pengurang', true);
+                })->get();
+        
+            foreach ($pengurangs as $pengurang) {
+                $pengurang->dummy = rand(1,1000);
+                $pengurang->save();
             }
         }
     }

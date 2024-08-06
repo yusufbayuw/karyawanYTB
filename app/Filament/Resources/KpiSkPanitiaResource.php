@@ -2,44 +2,48 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\KpiSkPanitiaResource\Pages;
+use App\Filament\Resources\KpiSkPanitiaResource\RelationManagers;
+use App\Models\KpiKepanitiaan;
+use App\Models\KPIPeriode;
+use App\Models\KpiSkPanitia;
 use Filament\Forms;
-use Filament\Tables;
-use App\Models\UnitKpi;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UnitKpiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use App\Filament\Resources\UnitKpiResource\RelationManagers;
 
-class UnitKpiResource extends Resource
+class KpiSkPanitiaResource extends Resource
 {
-    protected static ?string $model = UnitKpi::class;
+    protected static ?string $model = KpiSkPanitia::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $modelLabel = 'SK Kepanitiaan';
 
     protected static ?string $navigationGroup = 'KPI';
 
-    protected static ?int $navigationSort = 12;
+    protected static ?int $navigationSort = 21;
 
-    protected static ?string $navigationLabel = 'Unit';
+    protected static ?string $navigationLabel = 'SK Kepanitiaan';
 
-    protected static ?string $slug = 'kpi-unit';
+    protected static ?string $slug = 'kpi-sk-kepanitiaan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('unit_id')
-                    ->relationship('unit', 'nama'),
+                Forms\Components\Hidden::make('periode_kpi_id')
+                    ->default(fn () => KPIPeriode::where('is_active', true)->first()->id),
                 Forms\Components\TextInput::make('nama')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('code')
+                Forms\Components\TextInput::make('nomor')
                     ->maxLength(255),
+                Forms\Components\Select::make('jenis')
+                    ->options(fn () => KpiKepanitiaan::distinct()->pluck('jenis', 'jenis')),
+                Forms\Components\FileUpload::make('file'),
             ]);
     }
 
@@ -47,15 +51,15 @@ class UnitKpiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('unit.nama')
-                    ->label('Unit')
+                Tables\Columns\TextColumn::make('periode.nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('code')
+                Tables\Columns\TextColumn::make('nomor')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jenis')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('file')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -74,7 +78,6 @@ class UnitKpiResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -84,7 +87,7 @@ class UnitKpiResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageUnitKpis::route('/'),
+            'index' => Pages\ManageKpiSkPanitias::route('/'),
         ];
     }
 }

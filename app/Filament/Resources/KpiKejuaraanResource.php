@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KpiKejuaraanResource\Pages;
-use App\Filament\Resources\KpiKejuaraanResource\RelationManagers;
-use App\Models\KpiKejuaraan;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\KpiKejuaraan;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\KpiKejuaraanResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\KpiKejuaraanResource\RelationManagers;
 
 class KpiKejuaraanResource extends Resource
 {
@@ -37,6 +38,8 @@ class KpiKejuaraanResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jabatan')
                     ->maxLength(255),
+                Forms\Components\TextInput::make('job_code')
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('kategori')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('poin')
@@ -51,6 +54,8 @@ class KpiKejuaraanResource extends Resource
                 Tables\Columns\TextColumn::make('prestasi')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jabatan')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('job_code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kategori')
                     ->searchable(),
@@ -73,6 +78,7 @@ class KpiKejuaraanResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

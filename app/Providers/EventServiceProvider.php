@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Infak;
 use App\Models\Cabang;
 use App\Models\Cicilan;
+use App\Models\KpiDataPanitia;
+use App\Models\KpiDataPrestasi;
+use App\Models\KpiKejuaraan;
 use App\Models\KPIKontrak;
 use App\Models\Periode;
 use App\Models\Pinjaman;
@@ -13,15 +16,13 @@ use App\Models\Penilaian;
 use App\Models\Pengeluaran;
 use App\Models\KPIPenilaian;
 use App\Observers\UserObserver;
-use App\Observers\InfakObserver;
-use App\Observers\CabangObserver;
-use App\Observers\CicilanObserver;
+use App\Observers\KpiDataPanitiaAfterCommitObserver;
+use App\Observers\KpiDataPanitiaObserver;
+use App\Observers\KpiDataPrestasiObserver;
+use App\Observers\KpiKejuaraanObserver;
 use App\Observers\KPIKontrakObserver;
-use App\Observers\PeriodeObserver;
-use App\Observers\PinjamanObserver;
 use App\Observers\PenilaianObserver;
 use Illuminate\Support\Facades\Event;
-use App\Observers\PengeluaranObserver;
 use Illuminate\Auth\Events\Registered;
 use App\Observers\KPIPenilaianObserver;
 use App\Observers\PenilaianAfterCommitObserver;
@@ -52,6 +53,10 @@ class EventServiceProvider extends ServiceProvider
         //Periode::observe(PeriodeObserver::class);
         KPIPenilaian::observe(KPIPenilaianObserver::class);
         KPIKontrak::observe(KPIKontrakObserver::class);
+        KpiDataPanitia::observe(KpiDataPanitiaObserver::class);
+        KpiDataPanitia::observe(KpiDataPanitiaAfterCommitObserver::class);
+        KpiKejuaraan::observe(KpiKejuaraanObserver::class);
+        KpiDataPrestasi::observe(KpiDataPrestasiObserver::class);
     }
 
     /**

@@ -9,7 +9,7 @@ class KpiKejuaraan extends Model
 {
     use HasFactory;
 
-    public function getLinkAttribute()
+    /* public function getLinkAttribute()
     {
         $prestasi = $this->prestasi ?? '';
         $jabatan = $this->jabatan ?? '';
@@ -17,5 +17,5 @@ class KpiKejuaraan extends Model
         $poin = $this->poin ?? '';
 
         return "$prestasi - $jabatan - $kategori - $poin";
-    }
+    } */
 }

@@ -11,11 +11,12 @@ class KPIKontrakObserver
      */
     public function created(KPIKontrak $kPIKontrak): void
     {
-        $unitName = $kPIKontrak->unit->code ?? '';
-        $jabatanName = $kPIKontrak->jabatan->code ?? '';
+        $unitName = $kPIKontrak->unit_kpi->code ?? '';
+        $jabatanName = $kPIKontrak->job_code ?? ''; //$kPIKontrak->jabatan->code ?? '';
         $order = $kPIKontrak->order ?? '';
         $kpi = $kPIKontrak->kpi ?? '';
 
+        $kPIKontrak->unit_id = $kPIKontrak->unit_kpi->unit->id ?? '';
         $kPIKontrak->code = "$unitName-$jabatanName.$order";
         $kPIKontrak->kpi_code = "($unitName-$jabatanName.$order) $kpi";
         $kPIKontrak->saveQuietly();
@@ -26,11 +27,12 @@ class KPIKontrakObserver
      */
     public function updated(KPIKontrak $kPIKontrak): void
     {
-        $unitName = $kPIKontrak->unit->code ?? '';
-        $jabatanName = $kPIKontrak->jabatan->code ?? '';
+        $unitName = $kPIKontrak->unit_kpi->code ?? '';
+        $jabatanName = $kPIKontrak->job_code ?? ''; //$kPIKontrak->jabatan->code ?? '';
         $order = $kPIKontrak->order ?? '';
         $kpi = $kPIKontrak->kpi ?? "";
 
+        $kPIKontrak->unit_id = $kPIKontrak->unit_kpi->unit->id ?? '';
         $kPIKontrak->code = "$unitName-$jabatanName.$order";
         $kPIKontrak->kpi_code = "($unitName-$jabatanName.$order) $kpi";
         $kPIKontrak->saveQuietly();

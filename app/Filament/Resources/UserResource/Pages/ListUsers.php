@@ -20,12 +20,12 @@ class ListUsers extends ListRecords
     {
         $userAuthSpAd = auth()->user()->hasRole('super_admin');
         return [
-            ExportAction::make('Export')
+            /* ExportAction::make('Export')
                     ->exporter(UserExporter::class)
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
-                    ->fileName(fn (): string => "pegawai-". time() .".xlsx"),
+                    ->fileName(fn (): string => "pegawai-". time() .".xlsx"), */
             Actions\Action::make('Basic Role')
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')

@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KPIKontrakResource\Pages;
-use App\Filament\Resources\KPIKontrakResource\RelationManagers;
-use App\Models\KPIKontrak;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\KPIKontrak;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\KPIKontrakResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\KPIKontrakResource\RelationManagers;
+use App\Models\KPIPenilaian;
 
 class KPIKontrakResource extends Resource
 {
@@ -19,15 +21,15 @@ class KPIKontrakResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
 
-    protected static ?string $modelLabel = 'Kontrak';
+    protected static ?string $modelLabel = 'Master Kontrak';
 
     protected static ?string $navigationGroup = 'KPI';
 
     protected static ?int $navigationSort = 20;
 
-    protected static ?string $navigationLabel = 'Kontrak';
+    protected static ?string $navigationLabel = 'Master Kontrak';
 
-    protected static ?string $slug = 'kpi-kontrak';
+    protected static ?string $slug = 'kpi-master-kontrak';
 
     public static function form(Form $form): Form
     {
@@ -38,16 +40,13 @@ class KPIKontrakResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Periode'),
-                Forms\Components\Select::make('unit_id')
-                    ->relationship('unit', 'nama')
+                Forms\Components\Select::make('unit_kpi_id')
+                    ->relationship('unit_kpi', 'nama')
                     ->searchable()
                     ->preload()
                     ->label('Unit'),
-                Forms\Components\Select::make('jabatan_id')
-                    ->relationship('jabatan', 'title')
-                    ->searchable()
-                    ->preload()
-                    ->label('Job Name'),
+                Forms\Components\TextInput::make('job_code')
+                    ->label('Job Code'),
                 Forms\Components\TextInput::make('order')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('kpi')
@@ -63,13 +62,12 @@ class KPIKontrakResource extends Resource
                     ->preload()
                     ->label('Teruskan Ke-'),
                 Forms\Components\Toggle::make('is_kepanitiaan')
-                    ->required()
                     ->label('Poin Kepanitiaan?'),
                 Forms\Components\Toggle::make('is_kejuaraan')
-                    ->required()
                     ->label('Poin Kejuaraan?'),
                 Forms\Components\Toggle::make('is_komponen_pengurang')
-                    ->required()
+                    ->label('Poin Pengurang?'),
+                Forms\Components\Toggle::make('is_cabang_pengurang')
                     ->label('Poin Pengurang?'),
             ]);
     }
@@ -81,11 +79,12 @@ class KPIKontrakResource extends Resource
                 Tables\Columns\TextColumn::make('periode.nama')
                     ->label('Periode')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('unit.code')
+                Tables\Columns\TextColumn::make('unit_kpi.code')
                     ->label('Unit')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jabatan.code')
-                    ->label('Job Name')
+                Tables\Columns\TextColumn::make('job_code')
+                    ->label('Job Code')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order')
                     ->searchable(),
@@ -103,6 +102,8 @@ class KPIKontrakResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('target')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('currency')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('poin')
@@ -112,13 +113,51 @@ class KPIKontrakResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_kepanitiaan')
                     ->boolean()
-                    ->label('Kepanitiaan'),
+                    ->label('Kepanitiaan')
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\IconColumn::make('is_kejuaraan')
                     ->boolean()
-                    ->label('Kejuaraan'),
+                    ->label('Prestasi Siswa')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\IconColumn::make('is_komponen_pengurang')
                     ->boolean()
-                    ->label('Pengurang'),
+                    ->label('Kepatuhan Pengurang')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_cabang_pengurang')
+                    ->boolean()
+                    ->label('Cabang Pengurang')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -135,6 +174,7 @@ class KPIKontrakResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

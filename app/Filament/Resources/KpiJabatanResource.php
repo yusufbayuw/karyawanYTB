@@ -19,13 +19,13 @@ class KpiJabatanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
-    protected static ?string $modelLabel = 'Poin Jabatan';
+    protected static ?string $modelLabel = 'Poin Tugas';
 
     protected static ?string $navigationGroup = 'KPI';
 
     protected static ?int $navigationSort = 15;
 
-    protected static ?string $navigationLabel = 'Poin Jabatan';
+    protected static ?string $navigationLabel = 'Poin Tugas';
 
     protected static ?string $slug = 'kpi-poin-jabatan';
 

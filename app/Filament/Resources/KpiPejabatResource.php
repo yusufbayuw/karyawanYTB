@@ -33,10 +33,16 @@ class KpiPejabatResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('kpi_jabatan_id')
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Pilih Pegawai')
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('kpi_jabatan_id')
+                    ->relationship('kpi_jabatan', 'nama')
+                    ->label('Pilih Tugas Tambahan')
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -44,11 +50,17 @@ class KpiPejabatResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Pegawai')
+                    ->wrap()
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kpi_jabatan_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('kpi_jabatan.nama')
+                    ->label('Tugas Tambahan')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('kpi_jabatan.poin')
+                    ->label('Poin')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

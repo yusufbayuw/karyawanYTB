@@ -12,7 +12,7 @@ class KPIPenilaian extends Model
 
     protected $casts = [
         'rincian_kepanitiaan' => 'json',
-        'rincian_kejuaraan' => 'json',
+        'rincian_prestasi' => 'json',
     ];
 
     public function user(): BelongsTo
@@ -20,6 +20,10 @@ class KPIPenilaian extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
     
+    public function periode(): BelongsTo
+    {
+        return $this->belongsTo(KPIPeriode::class, 'periode_kpi_id', 'id');
+    }
 
     public function kontrak(): BelongsTo
     {

@@ -13,11 +13,11 @@ use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
 use App\Filament\Exports\UserExporter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\ExportBulkAction;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class UserResource extends Resource
 {
@@ -91,7 +91,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('golongan.nama')
                     ->sortable()
-                    ->formatStateUsing(fn (User $user) => $user->golongan->nama . ' - ' . $user->tingkat->title),
+                    ->formatStateUsing(fn (User $user) => ($user->golongan->nama ?? '') . ' - ' . ($user->tingkat->title ?? '')),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
@@ -115,12 +115,12 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    ExportBulkAction::make('Export Pilihan')
-                        ->exporter(UserExporter::class)
-                        ->formats([
-                            ExportFormat::Xlsx,
-                        ])
-                        ->fileName(fn (): string => "pegawai-". time() .".xlsx"),
+                    ExportBulkAction::make('Export Pilihan'),
+                        //->exporter(UserExporter::class)
+                        //->formats([
+                        //    ExportFormat::Xlsx,
+                        //])
+                        //->fileName(fn (): string => "pegawai-". time() .".xlsx"),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

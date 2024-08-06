@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\KPIKontrakResource\Pages;
 
-use App\Filament\Resources\KPIKontrakResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use EightyNine\ExcelImport\ExcelImportAction;
+use App\Filament\Resources\KPIKontrakResource;
 
 class ListKPIKontraks extends ListRecords
 {
@@ -13,6 +14,9 @@ class ListKPIKontraks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExcelImportAction::make('import')
+                ->color("info")
+                ->icon('heroicon-o-arrow-up-tray'),
             Actions\CreateAction::make(),
         ];
     }

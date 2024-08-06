@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateKpiPejabat extends CreateRecord
 {
     protected static string $resource = KpiPejabatResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

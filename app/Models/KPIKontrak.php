@@ -31,7 +31,12 @@ class KPIKontrak extends Model
 
     public function unit(): BelongsTo
     {
-        return $this->belongsTo(UnitKpi::class, 'unit_id', 'id');
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
+    }
+
+    public function unit_kpi(): BelongsTo
+    {
+        return $this->belongsTo(UnitKpi::class, 'unit_kpi_id', 'id');
     }
 
     public function jabatan(): BelongsTo
@@ -50,6 +55,11 @@ class KPIKontrak extends Model
     }
 
     public function terusan(): BelongsTo
+    {
+        return $this->belongsTo(KPIKontrak::class, 'parent_id', 'id');
+    }
+
+    public function children(): BelongsTo
     {
         return $this->belongsTo(KPIKontrak::class, 'parent_id', 'id');
     }
