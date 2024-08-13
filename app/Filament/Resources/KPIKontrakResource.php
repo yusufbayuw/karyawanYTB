@@ -56,11 +56,21 @@ class KPIKontrakResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('poin')
                     ->maxLength(255),
-                Forms\Components\Select::make('parent_id')
-                    ->options(KPIKontrak::all()->pluck('kpi_code', 'id'))
-                    ->searchable()
-                    ->preload()
-                    ->label('Teruskan Ke-'),
+                Forms\Components\Repeater::make('terusan')
+                    ->label('Terusan Penilaian Ke-')
+                    ->schema([
+                        Forms\Components\Select::make('kontrak')
+                            ->label('Kontrak')
+                            ->options(fn (KPIKontrak $kPIKontrak) => KPIKontrak::where('periode_kpi_id', $kPIKontrak->periode_kpi_id)->pluck('kpi_code', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ]),
+                // Forms\Components\Select::make('parent_id')
+                //     ->options(KPIKontrak::all()->pluck('kpi_code', 'id'))
+                //     ->searchable()
+                //     ->preload()
+                //     ->label('Teruskan Ke-'),
                 Forms\Components\Toggle::make('is_kepanitiaan')
                     ->label('Poin Kepanitiaan?'),
                 Forms\Components\Toggle::make('is_kejuaraan')
@@ -69,6 +79,16 @@ class KPIKontrakResource extends Resource
                     ->label('Poin Pengurang?'),
                 Forms\Components\Toggle::make('is_cabang_pengurang')
                     ->label('Poin Pengurang?'),
+                Forms\Components\Toggle::make('is_persentase')
+                    ->label('Rumus Persentase?'),
+                Forms\Components\Toggle::make('is_pengali')
+                    ->label('Rumus Pengali?'),
+                Forms\Components\Toggle::make('is_static')
+                    ->label('Nilai Static?'),
+                Forms\Components\Toggle::make('is_bulan')
+                    ->label('Rumus Bulan?'),
+                Forms\Components\Toggle::make('is_jp')
+                    ->label('Jam Pertemuan?'),
             ]);
     }
 
@@ -112,7 +132,7 @@ class KPIKontrakResource extends Resource
                     ->label('Terusan')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_kepanitiaan')
-                    ->boolean()
+                    ->boolean()->sortable()
                     ->label('Kepanitiaan')
                     ->alignCenter()
                     ->action(function ($record, $column) {
@@ -123,7 +143,7 @@ class KPIKontrakResource extends Resource
                     })
                     ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\IconColumn::make('is_kejuaraan')
-                    ->boolean()
+                    ->boolean()->sortable()
                     ->label('Prestasi Siswa')
                     ->wrapHeader()
                     ->alignCenter()
@@ -135,7 +155,7 @@ class KPIKontrakResource extends Resource
                     })
                     ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\IconColumn::make('is_komponen_pengurang')
-                    ->boolean()
+                    ->boolean()->sortable()
                     ->label('Kepatuhan Pengurang')
                     ->wrapHeader()
                     ->alignCenter()
@@ -147,8 +167,68 @@ class KPIKontrakResource extends Resource
                     })
                     ->color(fn ($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\IconColumn::make('is_cabang_pengurang')
-                    ->boolean()
+                    ->boolean()->sortable()
                     ->label('Cabang Pengurang')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_persentase')
+                    ->boolean()->sortable()
+                    ->label('Rumus Persentase')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_pengali')
+                    ->boolean()->sortable()
+                    ->label('Rumus Pengali')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_static')
+                    ->boolean()->sortable()
+                    ->label('Nilai Static')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_bulan')
+                    ->boolean()->sortable()
+                    ->label('Rumus Bulan')
+                    ->wrapHeader()
+                    ->alignCenter()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    })
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
+                Tables\Columns\IconColumn::make('is_jp')
+                    ->boolean()->sortable()
+                    ->label('Jam Pertemuan')
                     ->wrapHeader()
                     ->alignCenter()
                     ->action(function ($record, $column) {

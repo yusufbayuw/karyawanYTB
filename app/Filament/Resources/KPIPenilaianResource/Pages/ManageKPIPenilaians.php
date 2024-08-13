@@ -40,7 +40,8 @@ class ManageKPIPenilaians extends ManageRecords
                                                     'kpi_kontrak_id' => $kontrak->id,
                                                 ],
                                                 [
-                                                    'target' => $kontrak->target,
+                                                    'target' => 100,
+                                                    'total' => $kontrak->poin,
                                                 ]
                                             );
                                         }

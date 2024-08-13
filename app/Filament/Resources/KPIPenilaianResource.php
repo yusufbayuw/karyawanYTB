@@ -140,7 +140,21 @@ class KPIPenilaianResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextInputColumn::make('realisasi')
                     ->sortable()
-                    ->disabled(fn (KPIPenilaian $kPIPenilaian) => ($kPIPenilaian->kontrak->is_kepanitiaan || $kPIPenilaian->kontrak->is_kejuaraan))
+                    ->disabled(function (KPIPenilaian $kPIPenilaian) {
+                        foreach (json_decode($kPIPenilaian->kontrak->terusan, true) as $terusan) {
+                            dd($terusan["kontrak"]);
+                        }
+                        dd($kPIPenilaian->kontrak->terusan);
+                        if ($kPIPenilaian->kontrak->is_kepanitiaan || $kPIPenilaian->kontrak->is_kejuaraan) {
+                            //kasus kejuaraan
+                            return true;
+                        } elseif ($kPIPenilaian->user->jabatan->children->count() && ($kPIPenilaian->kontrak->children ?? 0)) {
+                            // kasus jabatan membawahi dan kontrak memiliki children, kasus tidak membawahi namun kontrak memiliki children dan jabatan atasan berbeda, 
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } )
                     ->alignRight(),
                 Tables\Columns\TextColumn::make('kontrak.id')
                     ->formatStateUsing(fn (KPIPenilaian $kPIPenilaian) => $kPIPenilaian->kontrak->currency)

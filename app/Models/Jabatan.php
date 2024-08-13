@@ -21,4 +21,9 @@ class Jabatan extends Model
     {
         return $this->belongsTo(Jabatan::class, 'parent_id', 'id');
     }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Jabatan::class, 'parent_id', 'id');
+    }
 }

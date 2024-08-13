@@ -17,9 +17,11 @@ use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Resources\Pages\ListRecords\Tab;
 use App\Filament\Resources\PenilaianResource\Widgets\AbcIdentityWidget;
 use App\Filament\Resources\PenilaianResource\Widgets\AcuanPenilaianWidget;
+use Filament\Pages\Concerns\ExposesTableToWidgets;
 
 class ManagePenilaians extends ManageRecords
 {
+    use ExposesTableToWidgets;
     protected static string $resource = PenilaianResource::class;
 
     #[On('update-record')]

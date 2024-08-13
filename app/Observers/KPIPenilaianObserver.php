@@ -26,8 +26,8 @@ class KPIPenilaianObserver
             if ($kontrak->kpi === "Persentase kepatuhan organisasi terhadap hukum dan peraturan perundangan yang berlaku") {
                 $sumAll = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
                     ->where('user_id', $kPIPenilaian->user_id)
-                    ->whereHas('kontrak', function ($query) {
-                        $query->where('is_komponen_pengurang', false);
+                    ->whereHas('kontrak', function ($query) use ($kPIPenilaian) {
+                        $query->where('job_code', $kPIPenilaian->kontrak->job_code)->where('is_komponen_pengurang', false);
                     })->sum('total_realisasi');
 
                 $kPIPenilaian->total_realisasi = (-1) * ((100 - $kPIPenilaian->realisasi) / 100) * $sumAll / 2;
@@ -35,8 +35,8 @@ class KPIPenilaianObserver
             } elseif ($kontrak->kpi = "Persentase keluhan terhadap layanan yang diberikan") {
                 $sumAll = KPIPenilaian::where('periode_kpi_id', $kPIPenilaian->periode_kpi_id)
                     ->where('user_id', $kPIPenilaian->user_id)
-                    ->whereHas('kontrak', function ($query) {
-                        $query->where('is_komponen_pengurang', false);
+                    ->whereHas('kontrak', function ($query) use ($kPIPenilaian) {
+                        $query->where('job_code', $kPIPenilaian->kontrak->job_code)->where('is_komponen_pengurang', false);
                     })->sum('total_realisasi');
 
                 $kPIPenilaian->total_realisasi = (-1) * ($kPIPenilaian->realisasi / 100) * $sumAll / 2;
@@ -58,11 +58,20 @@ class KPIPenilaianObserver
                     $kPIPenilaian->saveQuietly();
                 }
             } else {
-                if ($kontrak->currency === '%') {
+                if ($kontrak->is_persentase) { // kasus perhitungan dengan persentase
                     $kPIPenilaian->total_realisasi = $kPIPenilaian->total > 0 ? (float)$kPIPenilaian->realisasi / (float)$kPIPenilaian->target * (float)$kontrak->poin : 0;
                     $kPIPenilaian->saveQuietly();
-                } else {
+                } elseif ($kontrak->is_pengali) { // kasus perhitungan dengan pengali
                     $kPIPenilaian->total_realisasi = $kPIPenilaian->total > 0 ? (float)$kPIPenilaian->realisasi * (float)$kontrak->poin : 0;
+                    $kPIPenilaian->saveQuietly();
+                } elseif ($kontrak->is_static) { // kasus perhitungan dengan static => realisasi = total_realisasi
+                    $kPIPenilaian->total_realisasi = $kPIPenilaian->realisasi;
+                    $kPIPenilaian->saveQuietly();
+                } elseif ($kontrak->is_bulan) { // kasus perhitungan bulan => pada asm dan stimb
+                    $kPIPenilaian->total_realisasi = (float)$kPIPenilaian->poin * (((float)$kPIPenilaian->target - (float)$kPIPenilaian->realisasi) * ((float)$kPIPenilaian->poin / (float)$kPIPenilaian->target));
+                    $kPIPenilaian->saveQuietly();
+                } elseif ($kontrak->is_jp) { // kasus perhitungan jam pelajaran pada unit tk, sd, smp, sma
+                    $kPIPenilaian->total_realisasi = ((float)$kPIPenilaian->realisasi * (float)$kontrak->poin) - (0 * (float)$kontrak->poin);
                     $kPIPenilaian->saveQuietly();
                 }
             }
