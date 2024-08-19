@@ -141,10 +141,8 @@ class KPIPenilaianResource extends Resource
                 Tables\Columns\TextInputColumn::make('realisasi')
                     ->sortable()
                     ->disabled(function (KPIPenilaian $kPIPenilaian) {
-                        foreach (json_decode($kPIPenilaian->kontrak->terusan, true) as $terusan) {
-                            dd($terusan["kontrak"]);
-                        }
-                        dd($kPIPenilaian->kontrak->terusan);
+                        
+                        dd(KPIKontrak::whereJsonContains('terusan', ['kontrak' => "{$kPIPenilaian->kontrak->id}"])->get());
                         if ($kPIPenilaian->kontrak->is_kepanitiaan || $kPIPenilaian->kontrak->is_kejuaraan) {
                             //kasus kejuaraan
                             return true;
