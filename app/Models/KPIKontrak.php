@@ -11,6 +11,10 @@ class KPIKontrak extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'terusan' => 'json',
+    ];
+
     /* // Definisikan accessor untuk kpi_code
     public function getCodeAttribute()
     {

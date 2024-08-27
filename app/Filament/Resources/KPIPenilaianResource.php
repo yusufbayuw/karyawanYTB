@@ -142,11 +142,12 @@ class KPIPenilaianResource extends Resource
                     ->sortable()
                     ->disabled(function (KPIPenilaian $kPIPenilaian) {
                         
-                        dd(KPIKontrak::whereJsonContains('terusan', ['kontrak' => "{$kPIPenilaian->kontrak->id}"])->get());
+                        //dd();
                         if ($kPIPenilaian->kontrak->is_kepanitiaan || $kPIPenilaian->kontrak->is_kejuaraan) {
-                            //kasus kejuaraan
+                            //kasus kejuaraan & kepanitiaan
                             return true;
-                        } elseif ($kPIPenilaian->user->jabatan->children->count() && ($kPIPenilaian->kontrak->children ?? 0)) {
+                        //} elseif ($kPIPenilaian->user->jabatan->children->count() && ($kPIPenilaian->kontrak->children ?? 0)) { //single jalur kontrak
+                        } elseif (($kPIPenilaian->user->jabatan->children->count() ?? 0) && (KPIKontrak::whereJsonContains('terusan', ['kontrak' => "{$kPIPenilaian->kontrak->id}"])->get() ?? 0)) { // multiple jalur kontrak
                             // kasus jabatan membawahi dan kontrak memiliki children, kasus tidak membawahi namun kontrak memiliki children dan jabatan atasan berbeda, 
                             return true;
                         } else {
@@ -241,7 +242,7 @@ class KPIPenilaianResource extends Resource
                     }),
             ], layout: FiltersLayout::AboveContent)->filtersFormColumns(1)
             ->actions([
-                Tables\Actions\EditAction::make(),
+                //Tables\Actions\EditAction::make(),
                 //Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -249,7 +250,8 @@ class KPIPenilaianResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultPaginationPageOption('all');
+            ->defaultPaginationPageOption('all')
+            ->recordUrl(null);
     }
 
     public static function getPages(): array
