@@ -40,7 +40,11 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('unit_kpi_id')
-                    ->relationship('unit_kpi', 'nama'),
+                    ->relationship('unit_kpi', 'nama')
+                    ->label('Unit KPI'),
+                Forms\Components\Select::make('unit_id')
+                    ->relationship('unit', 'nama')
+                    ->label('Unit Penugasan'),
                 Forms\Components\Select::make('golongan_id')
                     ->relationship('golongan', 'nama')
                     ->live(),
