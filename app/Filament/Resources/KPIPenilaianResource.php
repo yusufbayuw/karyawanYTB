@@ -143,6 +143,9 @@ class KPIPenilaianResource extends Resource
                     ->disabled(function (KPIPenilaian $kPIPenilaian) {
                         
                         //dd();
+                        if ($kPIPenilaian->kontrak->is_komponen_pengurang) {
+                            return false;
+                        }
                         if ($kPIPenilaian->kontrak->is_kepanitiaan || $kPIPenilaian->kontrak->is_kejuaraan) {
                             //kasus kejuaraan & kepanitiaan
                             return true;
