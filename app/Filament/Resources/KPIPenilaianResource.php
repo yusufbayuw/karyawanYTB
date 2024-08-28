@@ -14,6 +14,7 @@ use App\Models\KPIPeriode;
 use Filament\Tables\Table;
 use App\Models\KpiKejuaraan;
 use App\Models\KPIPenilaian;
+use App\Models\KpiDataPanitia;
 use App\Models\KpiKepanitiaan;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
@@ -21,10 +22,10 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KPIPenilaianResource\Pages;
 use App\Filament\Resources\KPIPenilaianResource\RelationManagers;
-use App\Models\KpiDataPanitia;
 
 class KPIPenilaianResource extends Resource
 {
@@ -167,6 +168,7 @@ class KPIPenilaianResource extends Resource
                     ->alignRight()
                     ->formatStateUsing(fn ($state) => ($state < 0) ? '(' . abs($state) . ')' : $state)
                     ->color(fn ($state) => ($state < 0) ? 'danger' : '')
+                    ->summarize(Sum::make()->label(''))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
