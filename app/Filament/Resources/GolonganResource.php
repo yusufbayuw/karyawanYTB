@@ -35,6 +35,10 @@ class GolonganResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('usia_pensiun')
+                    ->label('Usia Pensiun')
+                    ->numeric()
+                    ->required(),
                 Forms\Components\FileUpload::make('file')
                     ->label('Unggah File Acuan AK')
                     ->acceptedFileTypes(['image/jpeg','image/png','image/webp']),
@@ -49,6 +53,10 @@ class GolonganResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
+                Tables\Columns\TextInputColumn::make('usia_pensiun')
+                    ->label('Usia Pensiun')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ImageColumn::make('file')
                     ->simpleLightbox(),
                 Tables\Columns\TextColumn::make('created_at')

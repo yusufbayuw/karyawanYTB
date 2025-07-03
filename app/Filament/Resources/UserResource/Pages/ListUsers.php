@@ -8,6 +8,7 @@ use App\Imports\UpdateUserImport;
 use Filament\Actions\ExportAction;
 use App\Filament\Exports\UserExporter;
 use App\Filament\Resources\UserResource;
+use App\Imports\TanggalLahirUserImport;
 use Filament\Resources\Pages\ListRecords;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -34,11 +35,23 @@ class ListUsers extends ListRecords
                         $user->assignRole('panel_user');
                     });
                 }),
-            ExcelImportAction::make('update')
-                ->label('Update')
+            Actions\ActionGroup::make([
+                ExcelImportAction::make('update')
+                    ->label('Jabatan Update')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('success')
+                    ->use(UpdateUserImport::class)
+                    ->hidden(!$userAuthSpAd),
+                ExcelImportAction::make('tanggal_lahir')
+                    ->label('Lahir dan Tetap Update')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('success')
+                    ->use(TanggalLahirUserImport::class)
+                    ->hidden(!$userAuthSpAd),
+            ])->label('Update Data')
+                ->button()
                 ->icon('heroicon-o-arrow-path')
                 ->color('success')
-                ->use(UpdateUserImport::class)
                 ->hidden(!$userAuthSpAd),
             ExcelImportAction::make('import')
                 ->color("primary")

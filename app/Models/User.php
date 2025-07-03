@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasRoles, HasFactory, Notifiable, UserActivityTrait;//, HasPanelShield;
+    use HasApiTokens, HasRoles, HasFactory, Notifiable, UserActivityTrait; //, HasPanelShield;
 
     /**
      * The attributes that are mass assignable.
@@ -50,11 +50,13 @@ class User extends Authenticatable implements FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'tanggal_lahir' => 'date',
+        'tanggal_sk_pegawai_tetap' => 'date',
     ];
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;//(auth()->user()->is_can_login);
+        return true; //(auth()->user()->is_can_login);
     }
 
     public function penilaian(): HasMany

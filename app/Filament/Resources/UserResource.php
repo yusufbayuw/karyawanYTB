@@ -53,6 +53,22 @@ class UserResource extends Resource
                     ->disabled(fn (Get $get) => $get('golongan_id') === null),
                 Forms\Components\Select::make('jabatan_id')
                     ->relationship('jabatan', 'title'),
+                Forms\Components\DatePicker::make('tanggal_lahir')
+                    ->label('Tanggal Lahir')
+                    ->placeholder('DD-MM-YYYY')
+                    ->native(false),
+                Forms\Components\TextInput::make('nomor_sk_pegawai_tetap')
+                    ->label('Nomor SK Pegawai Tetap'),
+                Forms\Components\DatePicker::make('tanggal_sk_pegawai_tetap')
+                    ->label('Tanggal SK Pegawai Tetap')
+                    ->placeholder('DD-MM-YYYY')
+                    ->format('d-m-Y')
+                    ->native(false),
+                Forms\Components\FileUpload::make('berkas_sk_pegawai_tetap')
+                    ->label('Berkas SK Pegawai Tetap')
+                    ->disk('public')
+                    ->directory('berkas_sk_pegawai_tetap')
+                    ->visibility('public'),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -96,6 +112,22 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('golongan.nama')
                     ->sortable()
                     ->formatStateUsing(fn (User $user) => ($user->golongan->nama ?? '') . ' - ' . ($user->tingkat->title ?? '')),
+                Tables\Columns\TextColumn::make('tanggal_lahir')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('nomor_sk_pegawai_tetap')
+                    ->label('Nomor SK Pegawai Tetap')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('tanggal_sk_pegawai_tetap')
+                    ->label('Tanggal SK Pegawai Tetap')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('berkas_sk_pegawai_tetap')
+                    ->label('Berkas SK Pegawai Tetap')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
