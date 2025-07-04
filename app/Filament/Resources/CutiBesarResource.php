@@ -45,20 +45,24 @@ class CutiBesarResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label('Nama Pegawai')
+                    ->tooltip(fn ($record) => 'Tanggal SK Tetap: ' . optional($record->user?->tanggal_sk_pegawai_tetap)->format('d M Y'))
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_pengajuan')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('berkas_pengajuan')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_realisasi_1')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_realisasi_2')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nominal_kompensasi')
                     ->numeric()
+                    ->money('IDR', true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

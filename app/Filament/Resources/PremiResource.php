@@ -44,14 +44,18 @@ class PremiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Nama Pegawai')
+                    ->tooltip(fn ($record) => 'Tanggal SK Tetap: ' . optional($record->user?->tanggal_sk_pegawai_tetap)->format('d M Y'))
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_premi')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('persentase')
                     ->numeric()
+                    ->suffix('%')
+                    ->alignRight()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nominal')
                     ->numeric()
@@ -78,7 +82,8 @@ class PremiResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('tanggal_premi', 'asc');
     }
 
     public static function getRelations(): array

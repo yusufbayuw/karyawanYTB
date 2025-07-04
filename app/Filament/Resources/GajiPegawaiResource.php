@@ -19,7 +19,7 @@ class GajiPegawaiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $modelLabel = 'Gaji Pegawai';
-    protected static ?string $navigationGroup = 'Pegawai';
+    protected static ?string $navigationGroup = 'Benefit Pegawai';
     protected static ?string $navigationLabel = 'Gaji Pegawai';
     protected static ?string $slug = 'gaji-pegawai';
 
@@ -29,10 +29,20 @@ class GajiPegawaiResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->label('Nama Pegawai')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Pilih Pegawai')
                     ->required(),
-                Forms\Components\TextInput::make('tahun'),
+                Forms\Components\TextInput::make('tahun')
+                    ->numeric()
+                    ->required()
+                    ->placeholder('Tahun Gaji, contoh: 2023'),
                 Forms\Components\TextInput::make('nominal')
-                    ->numeric(),
+                    ->numeric()
+                    ->label('Nominal Gaji')
+                    ->placeholder('Masukkan nominal gaji')
+                    ->required(),
             ]);
     }
 
@@ -40,8 +50,8 @@ class GajiPegawaiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Nama Pegawai')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tahun'),
                 Tables\Columns\TextColumn::make('nominal')

@@ -40,11 +40,28 @@ class PensiunResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
+                    ->searchable()
+                    ->tooltip(fn ($record) => 
+                        'Tanggal Lahir: ' . (
+                            $record->user && $record->user->tanggal_lahir
+                                ? $record->user->tanggal_lahir->format('d M Y')
+                                : '-'
+                        ) . '. ' .
+                        'Usia Pensiun Golongan ' . (
+                            $record->user && $record->user->golongan && $record->user->golongan->nama
+                                ? $record->user->golongan->nama
+                                : '-'
+                        ) . ' : ' . (
+                            $record->user && $record->user->golongan && $record->user->golongan->usia_pensiun
+                                ? $record->user->golongan->usia_pensiun
+                                : '-'
+                        ) . ' tahun'
+                    )
+                    ->label('Nama Pegawai')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_pensiun')
-                    ->date()
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nominal')
                     ->numeric()

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Infak;
 use App\Models\Cabang;
 use App\Models\Cicilan;
+use App\Models\GajiPegawai;
 use App\Models\KpiDataPanitia;
 use App\Models\KpiDataPrestasi;
 use App\Models\KpiKejuaraan;
@@ -15,6 +16,7 @@ use App\Models\Pinjaman;
 use App\Models\Penilaian;
 use App\Models\Pengeluaran;
 use App\Models\KPIPenilaian;
+use App\Observers\GajiPegawaiObserver;
 use App\Observers\UserObserver;
 use App\Observers\KpiDataPanitiaAfterCommitObserver;
 use App\Observers\KpiDataPanitiaObserver;
@@ -57,6 +59,7 @@ class EventServiceProvider extends ServiceProvider
         KpiDataPanitia::observe(KpiDataPanitiaAfterCommitObserver::class);
         KpiKejuaraan::observe(KpiKejuaraanObserver::class);
         KpiDataPrestasi::observe(KpiDataPrestasiObserver::class);
+        GajiPegawai::observe(GajiPegawaiObserver::class);
     }
 
     /**
